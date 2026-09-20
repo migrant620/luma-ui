@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://luma-ui.edgeone.cool"><img src="docs/demo.png" width="420" alt="Luma UI: promo wall, event feed, and a dark hero detail page"></a>
+  <a href="https://luma-ui.edgeone.cool"><img src="docs/demo.gif" width="280" alt="Luma UI: promo wall, login sheet, home feed, and event detail"></a>
 </p>
 
 <h1 align="center">Luma UI</h1>
@@ -23,13 +23,13 @@ Explore a dated event feed, a discover rail with category chips, a dark hero det
 
 What makes Luma's interface work, and what this recreation had to get right.
 
-**Start on a gradient, land on white.** The promo wall spends one loud pink-to-amber gradient (`#FF5A7E` → `#FFB84D`) on a single "start here" heading. Once you pass the login sheet, the app drops to pure white with near-black ink — the gradient never returns. This makes the first moment feel special and the daily feed feel calm.
+**Start on a gradient, land on white.** The promo wall spends one loud pink-to-amber gradient on a single "start here" heading. Once you pass the login sheet, the app drops to pure white with near-black ink — the gradient never returns. This makes the first moment feel special and the daily feed feel calm.
 
-**Events are grouped by day, not by scroll position.** The feed opens with "Your Events" (empty state), then "Picked for You" switches into date-stamped sections — "September 22 / Tuesday", "September 26 / Saturday". The date divider is a bold serif-style heading with a light-grey secondary day name, so you can scan chronologically without a calendar view.
+**Events are grouped by day, not by scroll position.** The feed opens with "Your Events" (empty state), then "Picked for You" switches into date-stamped sections — "September 22 / Tuesday", "September 26 / Saturday". The date divider is a bold heading with a light-grey secondary day name, so you can scan chronologically without a calendar view.
 
-**Cards are cover + type, no chrome.** Each event row puts a rounded square cover on the left, then event name, a meta line with clock and pin icons, and the host name in muted grey. There is no card border, no shadow, no "RSVP" pill on the row — the register action lives on the detail page.
+**Cards are cover + type, no chrome.** Each event row puts a rounded square cover on the left, then event name, a meta line with clock and pin icons, and the host name in muted grey. There is no card border, no shadow, no RSVP pill on the row — the register action lives on the detail page.
 
-**The detail page turns dark.** Tapping an event opens a full-bleed hero painted from the cover (this build uses a deep navy placeholder), with a white floating card that brings the title, date, host, location and about sections up. Back and share sit as ghost icons over the dark hero; when you scroll, they become a pinned header.
+**The detail page turns dark.** Tapping an event opens a full-bleed hero painted from the cover, with a white floating card that brings the title, date, host, location and about sections up. Back and share sit as ghost icons over the dark hero.
 
 **One floating action, always.** A "+ Create Event" capsule floats above the bottom tab bar, in the bottom-right of the feed. It is the only persistent CTA outside the four tabs — Home, Discover, Notifications, Chat — and it stays anchored even when the feed scrolls.
 
@@ -45,7 +45,7 @@ What makes Luma's interface work, and what this recreation had to get right.
 |---|---|
 | Promo | The gradient wall with "start here" → login sheet (Continue with Phone). |
 | Home feed | Date-grouped events, "Your Events" empty state, Picked for You. |
-| Discover | Popular rail and category icon grid (All, Talks, Social, Workshop, Music, Outdoor, Tech). |
+| Discover | Popular rail and category icon grid. |
 | Detail | Dark hero, host line, location section, about text, ghost Contact/More buttons. |
 | Create | Event name, date/time, category chips, cover gallery, Register action. |
 | Notifications / Chat | Empty states with illustration and descriptive copy. |
@@ -53,7 +53,7 @@ What makes Luma's interface work, and what this recreation had to get right.
 ### A first walkthrough
 
 1. On the promo wall, tap **start here**, then **Continue with Phone** to land on the home feed.
-2. Tap **Back-to-School ConsumerInno Pop-up** to open the dark detail page; scroll to see the pinned back/share header.
+2. Tap the first event to open the dark detail page; scroll to see the pinned back/share header.
 3. Tap the **Discover** tab to see the popular rail and category grid.
 4. Tap the floating **+ Create Event** capsule to open the creation form.
 
