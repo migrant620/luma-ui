@@ -2,30 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Platform, Switch, TextInput, } from 'react-native';
 import Svg, { Defs, LinearGradient as SvgGradient, Rect, Stop, Path as SvgPath, Path } from 'react-native-svg';
 import { colors, fonts, spacing, radius, typeScale } from './tokens';
-import { HomeIcon, DiscoverIcon, HeartIcon, ChatIcon, SettingsGear, MapIcon, SearchIcon, ClockIcon, PinIcon, ChevronRight, ChevronDown, BackArrow, ShareIcon, PlusIcon, CloseX, CalendarEmptyIcon, ImageAddIcon, LocationPinInput, DescriptionIcon, LockIcon, GoogleIcon, PasskeyIcon, CatFamily, CatTech, CatFood, CatBooks, CatGames, CatAI, CatRunning, } from './icons';
+import { HomeIcon, DiscoverIcon, HeartIcon, ChatIcon, SettingsGear, MapIcon, SearchIcon, ClockIcon, PinIcon, ChevronRight, ChevronDown, BackArrow, ShareIcon, PlusIcon, CloseX, CalendarEmptyIcon, ImageAddIcon, LocationPinInput, DescriptionIcon, LockIcon, GoogleIcon, PasskeyIcon, CatFamily, CatTech, CatFood, CatBooks, CatGames, CatAI, CatRunning, ScidrMark, GearMark, FlowerMark, AiCollectiveMark, } from './icons';
 import { feedEvents, popularEvents, categories, detailEvent } from './data';
 import { useAppFonts } from './webfont';
-if (Platform.OS === 'web' && typeof document !== 'undefined') {
-    const fid = 'luma-font-face';
-    if (!document.getElementById(fid)) {
-        const style = document.createElement('style');
-        style.id = fid;
-        style.textContent = `
-      html, body, #root {
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        background: #ffffff;
-      }
-      html, body, #root, #root * {
-        font-family: 'PlusJakartaSans', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif !important;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-      }
-    `;
-        document.head.appendChild(style);
-    }
-}
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
     const fid = 'luma-font-face';
     if (!document.getElementById(fid)) {
@@ -189,24 +168,45 @@ function PromoScreen({ onNext }: {
       <HomeIndicator />
     </View>);
 }
-function ScidrBadge() {
-    return (<View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center' }}>
-      <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#FFFFFF' }}/>
+function HostMark({ kind, size = 26 }: {
+    kind: string;
+    size?: number;
+}) {
+    if (kind === 'scidr')
+        return <View style={{ marginRight: 8 }}><ScidrMark size={size}/></View>;
+    if (kind === 'ai')
+        return <View style={{ marginRight: 8 }}><AiCollectiveMark size={size}/></View>;
+    if (kind === 'gear')
+        return <View style={{ marginRight: 8 }}><GearMark size={size} bg="#E7EEF5"/></View>;
+    if (kind === 'avatars' || kind === 'white') {
+        const cols = kind === 'white'
+            ? ['#EFEFF1', '#E7E7EA', '#DEDEE2']
+            : ['#7EC8A0', '#C9A0E8', '#F0B890'];
+        return (<View style={{ flexDirection: 'row', marginRight: 8 }}>
+        {cols.map((col: string, i: number) => (<View key={i} style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: col, marginLeft: i === 0 ? 0 : -8, borderWidth: 2, borderColor: '#fff' }}/>))}
+      </View>);
+    }
+    if (kind === 'book') {
+        return (<View style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#5C8A2B', alignItems: 'center', justifyContent: 'center', marginRight: 8 }}>
+        <Text style={{ color: '#fff', fontSize: 12 }}>📖</Text>
+      </View>);
+    }
+    return null;
+}
+function PopularHostMark({ kind }: {
+    kind: string;
+}) {
+    if (kind === 'flower')
+        return <View style={{ marginRight: 8 }}><FlowerMark size={24} bg="#F2F1F6"/></View>;
+    if (kind === 'southpark')
+        return <View style={{ marginRight: 8 }}><GearMark size={24} bg="#EEF1F2"/></View>;
+    return (<View style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#EFECE6', marginRight: 8, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 8, fontWeight: '800', color: '#8A8272' }}>M</Text>
     </View>);
 }
-function AvatarStack() {
-    const cols = ['#7EC8A0', '#C9A0E8', '#F0B890'];
-    return (<View style={{ flexDirection: 'row', marginRight: 4 }}>
-      {cols.map((col, i) => (<View key={i} style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: col, marginLeft: i === 0 ? 0 : -8, borderWidth: 2, borderColor: '#fff' }}/>))}
-    </View>);
-}
-function BookBadge() {
-    return (<View style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#5C8A2B', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700' }}>📖</Text>
-    </View>);
-}
-function HomeScreen({ onOpenDetail }: {
+function HomeScreen({ onOpenDetail, onScroll }: {
     onOpenDetail: (id: string) => void;
+    onScroll?: (y: number) => void;
 }) {
     return (<View style={styles.screenRoot}>
       <StatusBar />
@@ -216,7 +216,7 @@ function HomeScreen({ onOpenDetail }: {
         <View style={{ flex: 1 }}/>
         <SettingsGear size={26} color={colors.ink}/>
       </View>
-      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false} scrollEventThrottle={16} onScroll={(e: any) => onScroll?.(e.nativeEvent.contentOffset.y)}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Events</Text>
           <View style={{ flex: 1 }}/>
@@ -225,7 +225,7 @@ function HomeScreen({ onOpenDetail }: {
         
         <View style={styles.emptyCard}>
           <View style={styles.emptyIcon}>
-            <CalendarEmptyIcon size={44} color="#D0D0D5"/>
+            <CalendarEmptyIcon size={72} color="#D6D6DB"/>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.emptyTitle}>No Upcoming Events</Text>
@@ -239,22 +239,22 @@ function HomeScreen({ onOpenDetail }: {
           <ChevronDown size={22} color={colors.inkMuted}/>
         </TouchableOpacity>
 
-        {feedEvents.map((ev, i) => (<View key={ev.id}>
-            <View style={styles.dateDivider}>
-              <Text style={styles.dateBold}>{ev.dateLabel}</Text>
-              <Text style={styles.dateSlash}> / </Text>
-              <Text style={styles.dateDay}>{ev.dayLabel}</Text>
-            </View>
-            <TouchableOpacity style={styles.feedRow} onPress={() => onOpenDetail(ev.id)} accessibilityLabel={`${ev.title}, ${ev.time}, ${ev.location}, By ${ev.host}`}>
+        {feedEvents.map((ev, i) => {
+            const showDate = i === 0 || feedEvents[i - 1].dateLabel !== ev.dateLabel;
+            return (<View key={ev.id}>
+            {showDate && (<View style={styles.dateDivider}>
+                <Text style={styles.dateBold}>{ev.dateLabel}</Text>
+                <Text style={styles.dateSlash}> / </Text>
+                <Text style={styles.dateDay}>{ev.dayLabel}</Text>
+              </View>)}
+            <TouchableOpacity style={[styles.feedRow, !showDate && { marginTop: 16 }]} onPress={() => onOpenDetail(ev.id)} accessibilityLabel={`${ev.title}, ${ev.time}, ${ev.location}, By ${ev.host}`}>
               <Image source={ev.cover} style={styles.feedCover as any}/>
               <View style={styles.feedBody}>
-                <View style={styles.hostRow}>
-                  {ev.hostKind === 'scidr' && <ScidrBadge />}
-                  {ev.hostKind === 'avatars' && <AvatarStack />}
-                  {ev.hostKind === 'book' && <BookBadge />}
-                  {ev.hostKind === 'dot' && <View style={[styles.hostDot, { backgroundColor: ev.hostColor }]}/>}
-                  <Text style={styles.hostName} numberOfLines={1}>{ev.host}{ev.hostKind === 'book' ? '  📚' : ''}</Text>
-                </View>
+                {ev.hostKind !== 'none' && (<View style={styles.hostRow}>
+                    <HostMark kind={ev.hostKind} size={26}/>
+                    <Text style={[styles.hostName, { flex: 1 }]} numberOfLines={1}>{ev.host}</Text>
+                    {ev.price ? <Text style={styles.priceTag}>{ev.price}</Text> : null}
+                  </View>)}
                 <Text style={styles.feedTitle} numberOfLines={2}>{ev.title}</Text>
                 {ev.inlineMeta && ev.location ? (<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
                     <ClockIcon size={18}/>
@@ -274,12 +274,14 @@ function HomeScreen({ onOpenDetail }: {
                   </>)}
               </View>
             </TouchableOpacity>
-          </View>))}
+          </View>);
+        })}
       </ScrollView>
     </View>);
 }
-function DiscoverScreen({ onOpenDetail }: {
+function DiscoverScreen({ onOpenDetail, onScroll }: {
     onOpenDetail: (id: string) => void;
+    onScroll?: (y: number) => void;
 }) {
     const catIcons: Record<string, any> = {
         family: <CatFamily />, tech: <CatTech />, food: <CatFood />,
@@ -295,7 +297,7 @@ function DiscoverScreen({ onOpenDetail }: {
         <View style={{ width: 16 }}/>
         <SearchIcon size={26} color={colors.ink}/>
       </View>
-      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false} scrollEventThrottle={16} onScroll={(e: any) => onScroll?.(e.nativeEvent.contentOffset.y)}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>San Francisco</Text>
           <View style={{ flex: 1 }}/>
@@ -307,8 +309,8 @@ function DiscoverScreen({ onOpenDetail }: {
             <Image source={ev.cover} style={styles.popularCover as any}/>
             <View style={styles.popularBody}>
               <View style={styles.hostRow}>
-                <View style={[styles.hostDot, { width: 18, height: 18, borderRadius: 9, backgroundColor: '#F0E6D8' }]}/>
-                <Text style={styles.hostName} numberOfLines={1}>{ev.host}</Text>
+                <PopularHostMark kind={ev.hostMark}/>
+                <Text style={[styles.hostName, { flex: 1 }]} numberOfLines={1}>{ev.host}</Text>
                 {ev.badge && (<View style={[styles.badge, { backgroundColor: ev.badge.bg }]}>
                     <Text style={[styles.badgeText, { color: ev.badge.color }]}>{ev.badge.label}</Text>
                   </View>)}
@@ -352,9 +354,7 @@ function DetailScreen({ onBack }: {
         <View style={styles.detailBody}>
           <Text style={styles.detailTitle}>{detailEvent.title}</Text>
           <View style={styles.hostRow}>
-            <View style={{ width: 24, height: 24, borderRadius: 12, ...(Platform.OS === 'web' ? { background: 'linear-gradient(135deg,#FF6B35,#7B2FF7)' } as any : { backgroundColor: '#7B2FF7' }), alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: 12, fontWeight: '700' }}>C</Text>
-            </View>
+            <AiCollectiveMark size={26}/>
             <Text style={styles.detailHost}>{detailEvent.host} <ChevronRight size={18} color={colors.detailMuted}/></Text>
           </View>
           <Text style={styles.detailTime}>{detailEvent.time}</Text>
@@ -499,6 +499,16 @@ export default function App() {
     const [loaded] = useAppFonts();
     const [screen, setScreen] = React.useState<Screen>('promo');
     const [tab, setTab] = React.useState('home');
+    const [fabCollapsed, setFabCollapsed] = React.useState(false);
+    const lastY = React.useRef(0);
+    const onScroll = (y: number) => {
+        const delta = y - lastY.current;
+        if (y > 260 && delta > 6)
+            setFabCollapsed(true);
+        else if (delta < -6 || y < 120)
+            setFabCollapsed(false);
+        lastY.current = y;
+    };
     if (screen === 'promo')
         return <PromoScreen onNext={() => setScreen('main')}/>;
     if (screen === 'detail')
@@ -506,15 +516,15 @@ export default function App() {
     if (screen === 'create')
         return <CreateScreen onBack={() => setScreen('main')}/>;
     return (<View style={styles.appRoot}>
-      {tab === 'home' && <HomeScreen onOpenDetail={() => setScreen('detail')}/>}
-      {tab === 'discover' && <DiscoverScreen onOpenDetail={() => setScreen('detail')}/>}
+      {tab === 'home' && <HomeScreen onOpenDetail={() => setScreen('detail')} onScroll={onScroll}/>}
+      {tab === 'discover' && <DiscoverScreen onOpenDetail={() => setScreen('detail')} onScroll={onScroll}/>}
       {tab === 'notif' && <EmptyScreen title="Notifications" desc="Notifications about your events and friends will show up here." notif/>}
       {tab === 'chat' && <EmptyScreen title="Chat" desc="Messages from your events and conversations will show up here."/>}
-      <TabBar active={tab} onChange={setTab}/>
-      <TouchableOpacity style={styles.createFab} accessibilityLabel="Create event" onPress={() => setScreen('create')} activeOpacity={0.85}>
-        <PlusIcon size={23} color={colors.inkSecondary}/>
-        <Text style={styles.createFabText}>Create Event</Text>
-      </TouchableOpacity>
+      <TabBar active={tab} onChange={(t) => { setTab(t); setFabCollapsed(false); lastY.current = 0; }}/>
+      {tab === 'home' && (<TouchableOpacity style={fabCollapsed ? styles.createFabSmall : styles.createFab} accessibilityLabel="Create event" onPress={() => setScreen('create')} activeOpacity={0.85}>
+          <PlusIcon size={26} color={colors.inkSecondary}/>
+          {!fabCollapsed && <Text style={styles.createFabText}>Create Event</Text>}
+        </TouchableOpacity>)}
     </View>);
 }
 const styles = StyleSheet.create({
@@ -582,6 +592,7 @@ const styles = StyleSheet.create({
     hostRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
     hostDot: { width: 20, height: 20, borderRadius: 10, marginRight: 8 },
     hostName: { fontSize: 16, color: colors.inkSecondary, fontWeight: '400' },
+    priceTag: { fontSize: 14, fontWeight: '700', color: '#16A34A', backgroundColor: '#DCFCE7', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 9, overflow: 'hidden' },
     feedTitle: { fontSize: 20, fontWeight: '600', color: colors.ink, lineHeight: 26, marginBottom: 4 },
     metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
     metaText: { fontSize: 16, color: colors.inkMuted, marginLeft: 8 },
@@ -596,7 +607,7 @@ const styles = StyleSheet.create({
     detailNav: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 18, paddingTop: 52, paddingBottom: 10 },
     detailNavBtn: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(255,255,255,0.13)', alignItems: 'center', justifyContent: 'center' },
     detailCoverWrap: { marginHorizontal: 15, marginTop: 4, borderRadius: 24, overflow: 'hidden' as const },
-    detailCover: { width: '100%', height: 350, backgroundColor: '#1a1a2e' },
+    detailCover: { width: '100%', height: 390, backgroundColor: '#1a1a2e' },
     featuredBar: { backgroundColor: 'rgba(0,0,0,0.5)', paddingVertical: 10, alignItems: 'center' },
     featuredText: { color: '#fff', fontSize: 15, fontWeight: '500' },
     detailBody: { paddingHorizontal: 18, marginTop: 22 },
@@ -659,4 +670,10 @@ const styles = StyleSheet.create({
         elevation: 5, zIndex: 30,
     },
     createFabText: { fontSize: 19, fontWeight: '500', color: colors.inkSecondary, marginLeft: 9 },
+    createFabSmall: {
+        position: 'absolute', right: 18, bottom: 104, width: 56, height: 56, borderRadius: 20,
+        alignItems: 'center', justifyContent: 'center', backgroundColor: '#EFEFF1',
+        shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
+        elevation: 5, zIndex: 30,
+    },
 });

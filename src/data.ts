@@ -3,11 +3,12 @@ export interface FeedEvent {
     cover: any;
     host: string;
     hostColor: string;
-    hostKind: 'dot' | 'scidr' | 'avatars' | 'book';
+    hostKind: 'none' | 'scidr' | 'avatars' | 'book' | 'ai' | 'gear' | 'white';
     title: string;
     time: string;
     location?: string;
     inlineMeta?: boolean;
+    price?: string;
     dateLabel: string;
     dayLabel: string;
 }
@@ -15,7 +16,7 @@ export interface PopularEvent {
     id: string;
     cover: any;
     host: string;
-    hostIcon: string;
+    hostMark: 'maum' | 'southpark' | 'flower';
     title: string;
     time: string;
     badge?: {
@@ -64,8 +65,59 @@ export const feedEvents: FeedEvent[] = [
         title: 'Read in the Park',
         time: '3:00 PM',
         location: '',
+        dateLabel: 'September 26',
+        dayLabel: 'Saturday',
+    },
+    {
+        id: 'gamemarket',
+        cover: require('../assets/covers/cover-gamemarket.png'),
+        host: '',
+        hostColor: '#E8E8EC',
+        hostKind: 'none',
+        title: 'Game Market West: Fall 2026',
+        time: '10:00 AM',
+        location: 'Guildhouse',
+        inlineMeta: true,
+        dateLabel: 'September 27',
+        dayLabel: 'Sunday',
+    },
+    {
+        id: 'thinkingai',
+        cover: require('../assets/covers/cover-thinkingai.png'),
+        host: 'The AI Collective',
+        hostColor: '#7B2FF7',
+        hostKind: 'ai',
+        title: 'ThinkingAI Agentic Growth Summit 2026',
+        time: '12:00 PM',
+        location: 'Computer History Museum',
         dateLabel: 'September 28',
         dayLabel: 'Monday',
+    },
+    {
+        id: 'techweek',
+        cover: require('../assets/covers/cover-techweek.png'),
+        host: 'Open Source for AI',
+        hostColor: '#4A6B8A',
+        hostKind: 'gear',
+        title: 'SF Tech Week Agent Day',
+        time: '12:00 PM',
+        location: '135 Constitution Dr',
+        inlineMeta: true,
+        dateLabel: 'October 9',
+        dayLabel: 'Friday',
+    },
+    {
+        id: 'sudochoir',
+        cover: require('../assets/covers/cover-sudochoir.png'),
+        host: 'Find A Cappella, Freya Zheng',
+        hostColor: '#E8E8EC',
+        hostKind: 'white',
+        title: '拾度合唱团 Sudo Choir 两周年专场音乐会',
+        time: '4:00 PM',
+        location: 'Valley Presbyterian Church',
+        price: '$29.99',
+        dateLabel: 'October 11',
+        dayLabel: 'Sunday',
     },
 ];
 export const popularEvents: PopularEvent[] = [
@@ -73,7 +125,7 @@ export const popularEvents: PopularEvent[] = [
         id: 'maum',
         cover: require('../assets/covers/cover-maum.png'),
         host: 'Maum Market',
-        hostIcon: 'M',
+        hostMark: 'maum',
         title: 'Maum Market SF',
         time: 'Tomorrow, 11:00 AM',
     },
@@ -81,16 +133,16 @@ export const popularEvents: PopularEvent[] = [
         id: 'waymo',
         cover: require('../assets/covers/cover-waymo.png'),
         host: 'South Park Comm…',
-        hostIcon: 'W',
+        hostMark: 'southpark',
         title: '-1 to Waymo with Dmitri Dolgov',
         time: 'Mon 2:30 PM',
-        badge: { label: 'Near Capacity', color: '#D97706', bg: '#FEF3C7' },
+        badge: { label: 'Near Capacity', color: '#B45309', bg: '#FEF3C7' },
     },
     {
         id: 'codex',
         cover: require('../assets/covers/cover-codex.png'),
         host: 'Codex SF',
-        hostIcon: 'C',
+        hostMark: 'flower',
         title: 'Codex Community Meetup - San Francisco',
         time: 'Tue 6:00 PM',
         badge: { label: 'Waitlist Open', color: '#2563EB', bg: '#EFF6FF' },
