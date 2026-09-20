@@ -1,74 +1,77 @@
 <p align="center">
-  <a href="https://luma-ui.edgeone.cool"><img src="docs/demo.gif" width="280" alt="Luma UI: promo wall, login sheet, home feed, and event detail"></a>
+  <a href="https://luma-ui.edgeone.cool"><img src="docs/demo.gif" width="280" alt="Walking through the Luma welcome wall, event feed, Discover list, event detail and the create flow"></a>
 </p>
 
 <h1 align="center">Luma UI</h1>
 
 <p align="center">
-  <a href="https://luma-ui.edgeone.cool"><img src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-luma--ui.edgeone.cool-FF5A7E?style=for-the-badge" alt="Live demo"></a>
+  <a href="https://luma-ui.edgeone.cool"><img src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-luma--ui.edgeone.cool-F65A90?style=for-the-badge" alt="Live demo"></a>
 </p>
 
 <p align="center">
-  A high-fidelity, interactive recreation of Luma's mobile interface — real feed, real detail, real creation flow, running in your browser.<br>
-  <a href="#design-notes">Design notes</a> · <a href="#explore-the-prototype">Explore</a> · <a href="#run-locally">Run locally</a> · <a href="#scope-and-limitations">Scope</a> · <a href="https://github.com/migrant620/awesome-app-design-md">More apps →</a>
+  A high-fidelity, interactive recreation of the Luma Android app — real components, real navigation and local state, running in your browser.<br>
+  <a href="DESIGN.md">DESIGN.md</a> · <a href="#design-notes">Design notes</a> · <a href="#explore-the-prototype">Explore</a> · <a href="#run-locally">Run locally</a> · <a href="#scope-and-limitations">Scope</a> · <a href="https://github.com/migrant620/awesome-app-design-md">More apps →</a>
 </p>
 
 ---
 
-Created to help people get to know Luma through a hands-on exploration of its interface, and to appreciate the details that make event discovery feel effortless. For the full experience of finding and hosting events, explore [Luma](https://lu.ma).
+Created to explore how Luma turns a long list of events into a warm, inviting discovery surface — the frosted welcome wall, the soft brand gradient, the card-driven feed and the calm dark detail page. For the full experience of finding and hosting events, explore [Luma](https://lu.ma).
 
-Explore a dated event feed, a discover rail with category chips, a dark hero detail page painted from the cover, and a creation form with a cover gallery. Content uses demonstration data; it does not connect to a Luma account or host real events.
+Everything runs locally in your browser; it does not connect to a Luma account or load any live data.
 
 ## Design notes
 
 What makes Luma's interface work, and what this recreation had to get right.
 
-**Start on a gradient, land on white.** The promo wall spends one loud pink-to-amber gradient on a single "start here" heading. Once you pass the login sheet, the app drops to pure white with near-black ink — the gradient never returns. This makes the first moment feel special and the daily feed feel calm.
+**A welcome wall made of real events.** The first screen is a soft pastel gradient (pink → peach → mint → sky) fading to white, over a scatter of frosted-glass cards. Behind the blurred glass the cards are real event artwork; when the sign-in sheet rises, the artwork resolves. A single round gradient button — pink to orange — carries the whole first action.
 
-**Events are grouped by day, not by scroll position.** The feed opens with "Your Events" (empty state), then "Picked for You" switches into date-stamped sections — "September 22 / Tuesday", "September 26 / Saturday". The date divider is a bold heading with a light-grey secondary day name, so you can scan chronologically without a calendar view.
+**One warm gradient, used only for delight.** The brand gradient runs magenta `#DA60BF` → pink `#F65A90` → orange `#F3AB5A`. It is reserved for the welcome hero ("start here"), the round get-started button and the wordmark sparkle — never for ordinary chrome, which stays neutral white and grey.
 
-**Cards are cover + type, no chrome.** Each event row puts a rounded square cover on the left, then event name, a meta line with clock and pin icons, and the host name in muted grey. There is no card border, no shadow, no RSVP pill on the row — the register action lives on the detail page.
+**A feed that reads like a calendar.** "Picked for You" is grouped by date, with a quiet grey slash separating the date from the weekday. Each event is a square cover, a host marker, a two-line title and clock / pin metadata — status badges ("Near Capacity", "Waitlist Open") appear only when they matter.
 
-**The detail page turns dark.** Tapping an event opens a full-bleed hero painted from the cover, with a white floating card that brings the title, date, host, location and about sections up. Back and share sit as ghost icons over the dark hero.
+**Detail goes dark.** Tapping an event drops the page into a deep indigo surface (`#0A0922`). The cover sits in a large rounded card, the title and location switch to white, and circular translucent controls (back, share) float over the artwork. The light app and the dark detail page give each other contrast.
 
-**One floating action, always.** A "+ Create Event" capsule floats above the bottom tab bar, in the bottom-right of the feed. It is the only persistent CTA outside the four tabs — Home, Discover, Notifications, Chat — and it stays anchored even when the feed scrolls.
+**Creation is a stack of soft white cards.** Create Event is a light-grey canvas of rounded white fields — a dashed photo upload well, a timeline that connects the start and end times with a dotted line, pill-shaped date/time chips, and a quiet approval toggle. Nothing is boxed with hard borders.
 
-**Type hierarchy that works on a phone.** Event names are ~22dp semi-bold, date/meta is ~14dp with muted grey, section headers are ~28dp bold. Roboto does the work across the build; the brand Inter is approximated by a system sans.
+**Friendly type throughout.** Every label uses Plus Jakarta Sans, the rounded geometric face Luma ships with — large extra-bold screen titles, medium section headings and greys that carry hierarchy through weight rather than colour.
 
 ## Design system at a glance
 
-<p align="center"><img src="docs/design-system.png" width="720" alt="Luma UI colour palette and type specimens"></p>
+<p align="center"><img src="docs/design-system.png" width="720" alt="Luma UI colour palette, typography and component specimens"></p>
+
+The full token set — colours, type scale, spacing, radii and component notes — is in [DESIGN.md](DESIGN.md); the values live in [`src/tokens.ts`](src/tokens.ts).
 
 ## Explore the prototype
 
 | Area | Things to try |
 |---|---|
-| Promo | The gradient wall with "start here" → login sheet (Continue with Phone). |
-| Home feed | Date-grouped events, "Your Events" empty state, Picked for You. |
-| Discover | Popular rail and category icon grid. |
-| Detail | Dark hero, host line, location section, about text, ghost Contact/More buttons. |
-| Create | Event name, date/time, category chips, cover gallery, Register action. |
-| Notifications / Chat | Empty states with illustration and descriptive copy. |
+| Welcome | Tap the round gradient button to raise the sign-in sheet and reveal the event artwork behind the frosted cards. |
+| Home | Browse the date-grouped "Picked for You" feed and tap an event to open its detail page. |
+| Discover | Switch to Discover for the Popular Events list with Near Capacity / Waitlist Open badges, and browse by category. |
+| Detail | View the dark event detail with cover, host, time, action slots and location; use back to return. |
+| Create | Tap **Create Event** to open the form — cover well, event name, start/end timeline, location, description and the Require Approval toggle. |
+| Notifications / Chat | Visit the empty-state illustrations for the inbox tabs. |
 
 ### A first walkthrough
 
-1. On the promo wall, tap **start here**, then **Continue with Phone** to land on the home feed.
-2. Tap the first event to open the dark detail page; scroll to see the pinned back/share header.
-3. Tap the **Discover** tab to see the popular rail and category grid.
-4. Tap the floating **+ Create Event** capsule to open the creation form.
+1. On the welcome wall, tap the round pink→orange button.
+2. Choose **Continue with Phone** to enter the home feed.
+3. Scroll through "Picked for You", then open **Discover** to see popular events and categories.
+4. Tap any event to open the dark detail page, then use the back arrow.
+5. Tap **Create Event**, inspect the form fields, and toggle **Require Approval**.
 
-All content is local demonstration data. No account is created, no event is hosted, and no purchase or subscription occurs.
+Data is static and local to the page; reloading returns you to the welcome wall.
 
 ## Run locally
 
 Use Node.js 18 or newer, with npm.
 
 ```bash
-npm install
+npm ci --ignore-scripts
 npm run web
 ```
 
-Open the local URL printed by Expo. Dependency installation requires an internet connection. No Luma credentials or API key are required.
+Open the local URL printed by Expo. Dependency installation requires an internet connection. No Luma account or API key is required.
 
 ### Build for the web
 
@@ -81,10 +84,13 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Scope and limitations
 
-- **Mobile layout on the web.** At wider viewport sizes, the interface remains a centred column up to 480 CSS pixels wide. It is not a separate desktop dashboard.
-- **Demonstration content.** Event names, hosts, venues and artwork use placeholder data; covers are solid-colour placeholders rather than real photography.
-- **Local simulation.** Login, RSVP, hosting, payments and social actions are simulated. No Luma account is created or modified.
-- **Validation scope.** Selected flows have been checked in Chromium. This does not establish complete feature coverage, full visual equivalence, Safari/Firefox compatibility, or native Android/iOS acceptance.
+- **First batch of screens.** This edition covers the welcome wall, the sign-in sheet, the home feed, Discover, the dark event detail and the create-event form. Notifications and Chat are empty states. Ticketing, guests, calendar and profile flows are not built.
+- **Static data.** Events, hosts and artwork are a fixed local set prepared for this study; there is no search, filtering, maps or real host data.
+- **Artwork.** Event covers are cropped from reference frames for study only; the profile avatar is a plain gradient. They are not redistributed as promotional assets.
+- **Typeface.** The app ships Plus Jakarta Sans under the SIL Open Font License, bundled locally in `assets/fonts/`.
+- **Not yet built.** Sign-in authentication, maps, image upload and date/time pickers are visual only; the timeline and toggles do not persist.
+- **Mobile layout on the web.** The interface is designed for a phone-width column; on wider screens it stays a centred column.
+- **Validation scope.** The first-batch screens have been checked in Chromium at 393 dp width. This does not establish complete feature coverage, full visual equivalence, Safari/Firefox compatibility, or native Android/iOS acceptance.
 
 ## Commission a prototype
 
@@ -98,4 +104,6 @@ This is not an open-source license. Third-party components retain their own lice
 
 ## Attribution
 
-This is an independent prototype by M620, not an official Luma product and not affiliated with or endorsed by Luma. Third-party names identify the interface being demonstrated.
+This is an independent prototype by M620, not an official Luma product and not affiliated with or endorsed by Luma. Third-party names and event artwork identify the interface being demonstrated.
+
+Bundled fonts retain their own licenses: Plus Jakarta Sans under the SIL Open Font License 1.1. See the third-party notices in the build output.

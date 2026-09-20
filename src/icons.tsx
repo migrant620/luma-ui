@@ -6,9 +6,9 @@ const P = ({ d, size = 24, color = '#1A1A1A', fill = 'none', strokeWidth = 2, st
 export const HomeIcon = ({ size = 26, color = '#1A1A1A', filled = false }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth={filled ? 0 : 1.8} strokeLinecap="round" strokeLinejoin="round">
     <Path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V10.5z"/>
   </Svg>);
-export const DiscoverIcon = ({ size = 26, color = '#1A1A1A', filled = false }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth={filled ? 0 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-    <Circle cx="12" cy="12" r="9"/>
-    <Path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" fill={color}/>
+export const DiscoverIcon = ({ size = 26, color = '#1A1A1A', filled = false }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+    <Circle cx="12" cy="12" r="9.2"/>
+    <Path d="M15.5 8.5l-2.1 4.9-4.9 2.1 2.1-4.9 4.9-2.1z" fill={color} stroke="none"/>
   </Svg>);
 export const HeartIcon = ({ size = 26, color = '#1A1A1A', filled = false }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth={filled ? 0 : 1.8} strokeLinecap="round" strokeLinejoin="round">
     <Path d="M12 21s-7-4.5-9.5-9C.8 8.5 2.5 4.5 6.5 4.5c2 0 3.5 1 4.5 2.5 1-1.5 2.5-2.5 4.5-2.5 4 0 5.7 4 4 7.5-2.5 4.5-7.5 9-7.5 9z"/>
@@ -60,7 +60,6 @@ export const CloseX = ({ size = 20, color = '#9B9BA0' }: any) => (<Svg width={si
 export const CalendarEmptyIcon = ({ size = 48, color = '#C7C7CC' }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
     <Rect x="3" y="5" width="18" height="16" rx="3"/>
     <Path d="M3 9h18M8 3v4M16 3v4"/>
-    <Path d="M9 14l2 2 4-4"/>
   </Svg>);
 export const ImageAddIcon = ({ size = 24, color = '#FFFFFF' }: any) => (<Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
     <Rect x="3" y="3" width="18" height="18" rx="3"/>

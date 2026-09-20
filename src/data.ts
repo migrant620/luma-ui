@@ -3,9 +3,11 @@ export interface FeedEvent {
     cover: any;
     host: string;
     hostColor: string;
+    hostKind: 'dot' | 'scidr' | 'avatars' | 'book';
     title: string;
     time: string;
     location?: string;
+    inlineMeta?: boolean;
     dateLabel: string;
     dayLabel: string;
 }
@@ -33,6 +35,7 @@ export const feedEvents: FeedEvent[] = [
         cover: require('../assets/covers/cover-backtoschool.png'),
         host: 'SCIDR',
         hostColor: '#E8E8EC',
+        hostKind: 'scidr',
         title: 'Back-to-School ConsumerInno Pop-up',
         time: '11:30 AM',
         location: 'White Memorial Fountain',
@@ -44,9 +47,11 @@ export const feedEvents: FeedEvent[] = [
         cover: require('../assets/covers/cover-warehouse.png'),
         host: 'Aggie Cheung, Kirstie Lee, Lauren Sh…',
         hostColor: '#E8D5F0',
+        hostKind: 'avatars',
         title: 'Joint Warehouse Sale — The Little Red House × YUZU × A Jar of Pickl…',
         time: '11:00 AM',
         location: 'Baylands',
+        inlineMeta: true,
         dateLabel: 'September 26',
         dayLabel: 'Saturday',
     },
@@ -55,6 +60,7 @@ export const feedEvents: FeedEvent[] = [
         cover: require('../assets/covers/cover-readpark.png'),
         host: 'Read in the Park - Bay Area',
         hostColor: '#5C8A2B',
+        hostKind: 'book',
         title: 'Read in the Park',
         time: '3:00 PM',
         location: '',
