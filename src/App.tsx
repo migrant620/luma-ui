@@ -51,15 +51,13 @@ function Onboarding({ onNext }: {
           <Text style={styles.lumaWordmark}>luma</Text>
           <Text style={styles.delightful}>Delightful</Text>
           <Text style={styles.delightful}>events</Text>
-          <Text style={styles.startHere}>start here</Text>
         </View>
-      </View>
-      {!panelOpen ? (<View>
         <Text style={styles.pssst}>Pssst… the fun starts below</Text>
-        <TouchableOpacity style={styles.downArrow} onPress={() => setPanelOpen(true)} accessibilityLabel="start here">
-          <Text style={{ color: '#fff', fontSize: 28 }}>↓</Text>
+        <TouchableOpacity style={styles.startHereBtn} onPress={() => setPanelOpen(true)} accessibilityLabel="start here">
+          <Text style={styles.startHereText}>start here</Text>
         </TouchableOpacity>
-        </View>) : (<View style={styles.loginSheet}>
+      </View>
+      {panelOpen && (<View style={styles.loginSheet}>
           <View style={styles.grabber}/>
           <Text style={styles.loginSub}>
             Discover events, follow calendars and manage events you are going to.
@@ -387,15 +385,15 @@ function TabBar({ active, onTab }: any) {
 const styles = StyleSheet.create({
     root: { flex: 1, backgroundColor: colors.bg, width: '100%', maxWidth: 430, alignSelf: 'center' },
     screen: { flex: 1, backgroundColor: colors.bg },
-    onboardRoot: { flex: 1, backgroundColor: '#FDF0EC', overflow: 'hidden' },
-    promoWall: { flex: 1, backgroundColor: 'linear-gradient(135deg,#FFE0E0 0%,#FFF3D6 50%,#D6F5E8 100%)' },
+    onboardRoot: { flex: 1, minHeight: '100vh', backgroundColor: '#FDF0EC', overflow: 'hidden' },
+    promoWall: { flex: 1, minHeight: '100vh', backgroundColor: '#FDF0EC', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 80 },
     promoCard: { position: 'absolute', width: 180, height: 220, backgroundColor: 'rgba(255,255,255,0.6)', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.8)' },
-    onboardTextWrap: { position: 'absolute', bottom: 120, left: 0, right: 0, alignItems: 'center' },
+    onboardTextWrap: { alignItems: 'center', marginBottom: 16 },
     lumaWordmark: { fontSize: 28, color: '#C7C7CC', marginBottom: 12, fontFamily: fonts.regular },
     delightful: { fontSize: 44, color: colors.ink, fontFamily: fonts.bold, lineHeight: 52 },
-    startHere: { fontSize: 40, fontFamily: fonts.bold, color: colors.pinkStart },
-    pssst: { position: 'absolute', bottom: 180, left: 0, right: 0, textAlign: 'center', fontSize: 14, color: colors.inkSecondary },
-    downArrow: { position: 'absolute', bottom: 80, left: '50%', marginLeft: -40, width: 80, height: 80, borderRadius: 40, backgroundColor: colors.arrowPink, alignItems: 'center', justifyContent: 'center' },
+    pssst: { fontSize: 14, color: colors.inkSecondary, marginBottom: 20 },
+    startHereBtn: { backgroundColor: colors.pinkStart, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 28, },
+    startHereText: { fontSize: 22, fontFamily: fonts.bold, color: '#fff' },
     loginSheet: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 40 },
     grabber: { width: 40, height: 5, backgroundColor: '#E5E5EA', borderRadius: 3, alignSelf: 'center', marginBottom: 20 },
     loginSub: { fontSize: 16, color: colors.inkSecondary, textAlign: 'center', marginBottom: 20, lineHeight: 22 },
