@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Image, StyleSheet, Platform, Switch, TextInput, } from 'react-native';
 import Svg, { Defs, LinearGradient as SvgGradient, Rect, Stop, Path as SvgPath, Path } from 'react-native-svg';
 import { colors, fonts, spacing, radius, typeScale } from './tokens';
-import { HomeIcon, DiscoverIcon, HeartIcon, ChatIcon, SettingsGear, MapIcon, SearchIcon, ClockIcon, PinIcon, ChevronRight, ChevronDown, BackArrow, ShareIcon, PlusIcon, CloseX, CalendarEmptyIcon, ImageAddIcon, LocationPinInput, DescriptionIcon, LockIcon, GoogleIcon, PasskeyIcon, CatFamily, CatTech, CatFood, CatBooks, CatGames, CatAI, CatRunning, ScidrMark, GearMark, FlowerMark, AiCollectiveMark, } from './icons';
+import { HomeIcon, DiscoverIcon, HeartIcon, ChatIcon, SettingsGear, MapIcon, SearchIcon, ClockIcon, PinIcon, ChevronRight, ChevronDown, BackArrow, ShareIcon, PlusIcon, CloseX, CalendarEmptyIcon, ImageAddIcon, LocationPinInput, DescriptionIcon, LockIcon, GoogleIcon, PasskeyIcon, CatFamily, CatTech, CatFood, CatBooks, CatGames, CatAI, CatRunning, ScidrMark, GearMark, FlowerMark, AiCollectiveMark, SparkleIcon, } from './icons';
 import { feedEvents, popularEvents, categories, detailEvent } from './data';
+import { extractCoverBackground } from './palette';
 import { useAppFonts } from './webfont';
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
     const fid = 'luma-font-face';
@@ -18,63 +19,106 @@ if (Platform.OS === 'web' && typeof document !== 'undefined') {
         background: #ffffff;
       }
       html, body, #root, #root * {
-        font-family: 'PlusJakartaSans', 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif !important;
+        font-family: 'PlusJakartaSans', 'Segoe UI', system-ui, sans-serif !important;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
     `;
         document.head.appendChild(style);
     }
+    const fixWeight = () => {
+        try {
+            let src = '';
+            for (const ss of Array.from(document.styleSheets)) {
+                let rules: any[] = [];
+                try {
+                    rules = Array.from(ss.cssRules);
+                }
+                catch (e) {
+                    continue;
+                }
+                for (const r of rules) {
+                    if (r && r.constructor && r.constructor.name === 'CSSFontFaceRule'
+                        && (r as any).style && (r as any).style.fontFamily === 'PlusJakartaSans') {
+                        src = (r as any).style.src;
+                    }
+                }
+            }
+            if (src) {
+                const s = document.createElement('style');
+                s.id = 'luma-vf-weight';
+                s.textContent = `@font-face{font-family:'PlusJakartaSans';src:${src};font-weight:200 800;font-display:swap;}`;
+                document.head.appendChild(s);
+                if (document.fonts && (document.fonts as any).ready) {
+                    (document.fonts as any).ready.then(() => { (document as any).body && document.body.setAttribute('data-fonts', 'ready'); });
+                }
+                return true;
+            }
+        }
+        catch (e) { }
+        return false;
+    };
+    if (!fixWeight()) {
+        let tries = 0;
+        const t = setInterval(() => { if (fixWeight() || ++tries > 40)
+            clearInterval(t); }, 150);
+    }
 }
 const webBg = (css: string) => (Platform.OS === 'web' ? ({ background: css } as any) : {});
 const webTextGradient = (id: string) => Platform.OS === 'web'
     ? ({ backgroundImage: `linear-gradient(90deg,${colors.brandStart},${colors.brandEnd})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' } as any)
     : {};
-function StatusBar({ dark = false }: {
+function StatusBar(_props: {
     dark?: boolean;
 }) {
-    const c = dark ? '#FFFFFF' : '#1A1A1A';
-    return (<View style={[styles.statusBar, dark && { backgroundColor: 'transparent' }]}>
-      <Text style={[styles.statusTime, { color: c }]}>11:19</Text>
-      <View style={styles.statusIcons}>
-        <Text style={{ color: c, fontSize: 13, fontWeight: '600', marginRight: 6 }}>G</Text>
-        <Svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={2}>
-          <Path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/>
-        </Svg>
-      </View>
-      <View style={{ flex: 1 }}/>
-      
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-        <Svg width={18} height={14} viewBox="0 0 24 18" fill={c}><SvgPath d="M12 3C7 3 2.5 5 0 8l2 2c2-2.5 6-4.5 10-4.5s8 2 10 4.5l2-2C21.5 5 17 3 12 3zm0 5c-3 0-5.5 1.2-7.5 3L6.5 13C8 11.5 10 10.5 12 10.5s4 1 5.5 2.5L19.5 11C17.5 9.2 15 8 12 8zm0 5c-1.5 0-3 .5-4 1.5L12 19l4-4.5c-1-1-2.5-1.5-4-1.5z"/></Svg>
-        <Svg width={18} height={12} viewBox="0 0 24 16" fill={c}><SvgPath d="M2 14h4v2H2v-2zm5-3h4v5H7v-5zm5-3h4v8h-4V8zm5-4h4v12h-4V4z"/></Svg>
-        <View style={{ width: 24, height: 12, borderWidth: 1.5, borderColor: c, borderRadius: 3, marginLeft: 2, padding: 1.5 }}>
-          <View style={{ width: '80%', height: '100%', backgroundColor: c, borderRadius: 1 }}/>
-        </View>
-      </View>
-    </View>);
+    return null;
 }
 function HomeIndicator() {
     return <View style={styles.homeIndicator}/>;
 }
-const promoCards = [
-    { cover: require('../assets/covers/card-blue.png'), x: 0.78, y: 0.07, w: 0.34, h: 0.14, rot: 0.0 },
-    { cover: require('../assets/covers/card-thanksgiving.png'), x: 0.52, y: 0.13, w: 0.33, h: 0.16, rot: 0.4 },
-    { cover: require('../assets/covers/card-coffee.png'), x: 0.04, y: 0.21, w: 0.33, h: 0.15, rot: -0.4 },
-    { cover: require('../assets/covers/card-coffee.png'), x: -0.07, y: 0.31, w: 0.22, h: 0.17, rot: -0.2 },
-    { cover: require('../assets/covers/card-thanksgiving.png'), x: 0.40, y: 0.34, w: 0.42, h: 0.19, rot: 0.2 },
-    { cover: require('../assets/covers/card-poker.png'), x: 0.73, y: 0.23, w: 0.27, h: 0.17, rot: 0.4 },
-    { cover: require('../assets/covers/card-poker.png'), x: 0.72, y: 0.40, w: 0.29, h: 0.16, rot: 0.0 },
-    { cover: require('../assets/covers/card-coffee.png'), x: 0.02, y: 0.47, w: 0.19, h: 0.13, rot: 0.0 },
+type PromoCard = {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    cover?: any;
+};
+const promoCards: PromoCard[] = [
+    { x: 309, y: 84, w: 134, h: 112 },
+    { x: 215, y: 109, w: 131, h: 142 },
+    { x: 24, y: 173, w: 122, h: 133 },
+    { x: -30, y: 251, w: 105, h: 161 },
+    { x: 161, y: 300, w: 158, h: 172 },
+    { x: 284, y: 353, w: 132, h: 129 },
+    { x: -30, y: 412, w: 105, h: 123 },
+];
+const meshBlobs = [
+    { cx: 0, cy: 10, w: 275, h: 295, c: 'rgba(255,186,206,0.63)', bl: 106 },
+    { cx: 230, cy: 90, w: 230, h: 440, c: 'rgba(255,218,176,0.58)', bl: 111 },
+    { cx: 393, cy: 80, w: 140, h: 255, c: 'rgba(138,220,240,0.76)', bl: 67 },
+    { cx: 438, cy: 310, w: 245, h: 510, c: 'rgba(158,186,194,0.66)', bl: 113 },
+    { cx: -15, cy: 340, w: 285, h: 225, c: 'rgba(200,188,196,0.62)', bl: 111 },
 ];
 function PromoBackground({ revealed = false }: {
     revealed?: boolean;
 }) {
-    const glowCss = 'radial-gradient(ellipse 90% 42% at 12% 3%, rgba(255,192,210,0.65), transparent 60%),' +
-        'radial-gradient(ellipse 75% 40% at 48% 2%, rgba(254,226,192,0.70), transparent 60%),' +
-        'radial-gradient(ellipse 90% 42% at 90% 3%, rgba(150,222,240,0.60), transparent 60%),' +
-        'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 38%, rgba(255,255,255,0.92) 58%, #FFFFFF 72%)';
+    const glowCss = 'radial-gradient(ellipse 105% 58% at 8% 0%, rgba(255,192,210,0.62), transparent 66%),' +
+        'radial-gradient(ellipse 120% 62% at 50% 4%, rgba(254,226,192,0.58), transparent 72%),' +
+        'radial-gradient(ellipse 88% 48% at 93% 1%, rgba(150,222,240,0.62), transparent 66%),' +
+        'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 44%, rgba(255,255,255,0.55) 62%, rgba(255,255,255,0.95) 74%, #FFFFFF 80%)';
     return (<View style={StyleSheet.absoluteFill as any}>
-      {Platform.OS === 'web' ? (<View style={[StyleSheet.absoluteFill as any, { background: glowCss } as any]}/>) : (<Svg width="100%" height="100%" style={StyleSheet.absoluteFill as any}>
+      {Platform.OS === 'web' ? (<View style={[StyleSheet.absoluteFill as any, { backgroundColor: '#FFFFFF', overflow: 'hidden' } as any]}>
+          {meshBlobs.map((b, i) => (<View key={i} style={{
+                    position: 'absolute',
+                    left: b.cx - b.w / 2, top: b.cy - b.h / 2,
+                    width: b.w, height: b.h, borderRadius: 9999,
+                    backgroundColor: b.c,
+                    filter: `blur(${b.bl}px)`,
+                } as any}/>))}
+          <View style={[StyleSheet.absoluteFill as any, {
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 54%, rgba(255,255,255,0.55) 62%, #FFFFFF 67%)',
+                } as any]}/>
+        </View>) : (<Svg width="100%" height="100%" style={StyleSheet.absoluteFill as any}>
           <Defs><SvgGradient id="pgv" x1="0" y1="0" x2="0" y2="1">
             <Stop offset="0" stopColor={colors.promoYellow}/>
             <Stop offset="0.5" stopColor={colors.promoEnd}/>
@@ -85,20 +129,28 @@ function PromoBackground({ revealed = false }: {
       
       {promoCards.map((card, i) => (<View key={i} style={{
                 position: 'absolute',
-                left: `${card.x * 100}%`, top: `${card.y * 100}%`,
-                width: `${card.w * 100}%`, height: `${card.h * 100}%`,
-                transform: [{ rotate: `${card.rot}deg` }],
-                borderRadius: 18,
-                borderWidth: 2.5,
-                borderColor: 'rgba(255,255,255,0.85)',
-                backgroundColor: revealed ? 'rgba(255,255,255,0.25)' : 'rgba(215,215,220,0.35)',
+                left: card.x, top: card.y,
+                width: card.w, height: card.h,
+                borderRadius: 10,
+                borderWidth: 1.6,
+                borderColor: 'rgba(255,255,255,1)',
+                backgroundColor: 'rgba(170,170,175,0.05)',
                 overflow: 'hidden',
                 ...(Platform.OS === 'web' ? {
-                    backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
-                    boxShadow: '0 10px 28px rgba(0,0,0,0.08)',
+                    backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
                 } as any : {}),
             }}>
-          {revealed && (<Image source={card.cover} style={{ position: 'absolute', width: '100%', height: '100%' } as any} resizeMode="cover"/>)}
+          <View style={{
+                position: 'absolute',
+                left: 17, top: 17, right: 17, bottom: 17,
+                borderRadius: 6,
+                backgroundColor: 'rgba(160,160,165,0.10)',
+                ...(Platform.OS === 'web' ? {
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                } as any : {}),
+            }}>
+            {revealed && card.cover && (<Image source={card.cover} style={{ position: 'absolute', width: '100%', height: '100%' } as any} resizeMode="cover"/>)}
+          </View>
         </View>))}
     </View>);
 }
@@ -116,33 +168,46 @@ function PromoScreen({ onNext }: {
     const [panelOpen, setPanelOpen] = React.useState(false);
     const startGradient = Platform.OS === 'web'
         ? ({
-            backgroundImage: 'linear-gradient(90deg,#DA60BF 0%,#F160A9 25%,#F65A90 45%,#F98872 70%,#F3AB5A 100%)',
+            backgroundImage: 'linear-gradient(90deg,#E15EB9 0%,#F65A92 28%,#F8737B 50%,#F9945D 72%,#EFBE59 100%)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         } as any)
         : {};
+    const textBlock = (login?: boolean) => (<>
+      <Text accessibilityLabel="luma" style={[styles.lumaWordmark, login && { color: '#C4C4C5' }]}>luma<Text style={{ color: login ? '#C4C4C5' : colors.inkLight }}>✦</Text></Text>
+      <Text style={[styles.delightful, login && { color: '#151516' }]} {...({ 'aria-hidden': true } as any)}>Delightful</Text>
+      <Text style={[styles.delightful, login && { color: '#151516' }]} {...({ 'aria-hidden': true } as any)}>events</Text>
+      <Text style={[styles.startHereText, startGradient]}>start here</Text>
+    </>);
     return (<View style={styles.promoRoot}>
       <StatusBar />
-      <PromoBackground revealed={panelOpen}/>
-      <View style={styles.promoContent}>
-        <View style={{ flex: 1 }}/>
-        <Text style={styles.lumaWordmark}>luma<Text style={{ color: colors.inkLight }}>✦</Text></Text>
-        <Text style={styles.delightful}>Delightful</Text>
-        <Text style={styles.delightful}>events</Text>
-        <Text style={[styles.startHereText, startGradient]}>start here</Text>
-        <View style={{ height: 32 }}/>
-        <TouchableOpacity onPress={() => setPanelOpen(true)} accessibilityLabel="start here" style={styles.downArrow}>
-          {Platform.OS === 'web' ? (<View style={[styles.downArrowInner, {
-                    background: `linear-gradient(135deg,${colors.btnStart},${colors.btnEnd})`,
-                } as any]}>
-              <DownArrow size={30}/>
-            </View>) : (<View style={[styles.downArrowInner, { backgroundColor: colors.btnStart }]}>
-              <DownArrow size={30}/>
-            </View>)}
-        </TouchableOpacity>
-      </View>
-      {panelOpen && (<View style={styles.loginOverlay}>
+      {panelOpen ? (<View style={StyleSheet.absoluteFill as any}>
+          <Image source={require('../assets/images/login-covers.png')} style={styles.loginCovers as any}/>
+        </View>) : (<PromoBackground />)}
+      {!panelOpen ? (<View style={styles.promoContent}>
+          <View style={{ flex: 1 }}/>
+          {textBlock(false)}
+          <View style={{ height: 32 }}/>
+          <View style={styles.downArrowWrap}>
+            <TouchableOpacity onPress={() => setPanelOpen(true)} accessibilityLabel="start here" style={styles.downArrow}>
+              {Platform.OS === 'web' ? (<View style={[styles.downArrowInner, {
+                        background: `linear-gradient(135deg,${colors.btnStart},${colors.btnEnd})`,
+                    } as any]}>
+                  <DownArrow size={22}/>
+                </View>) : (<View style={[styles.downArrowInner, { backgroundColor: colors.btnStart }]}>
+                  <DownArrow size={22}/>
+                </View>)}
+            </TouchableOpacity>
+          </View>
+        </View>) : (<>
+          <View style={styles.loginTextBlock}>
+            <Text accessibilityLabel="luma" style={[styles.lumaWordmark, { position: 'absolute', top: -43, left: 0, right: 0, textAlign: 'center', marginBottom: 0, color: '#C4C4C5' }]}>luma<Text style={{ color: '#C4C4C5' }}>✦</Text></Text>
+            <Text style={[styles.delightful, { color: '#151516' }]} {...({ 'aria-hidden': true } as any)}>Delightful</Text>
+            <Text style={[styles.delightful, { color: '#151516' }]} {...({ 'aria-hidden': true } as any)}>events</Text>
+            <Text style={[styles.startHereText, startGradient]}>start here</Text>
+          </View>
           <View style={styles.loginSheet}>
-            <View style={styles.grabber}/>
+            
+            <View style={styles.grabber} accessibilityRole="button" accessibilityLabel="Drag handle"/>
             <Text style={styles.loginSub}>
               Discover events, follow calendars and manage events you are going to.
             </Text>
@@ -154,55 +219,84 @@ function PromoScreen({ onNext }: {
             </TouchableOpacity>
             <View style={styles.oauthRow}>
               <TouchableOpacity style={styles.oauthBtn} accessibilityLabel="Sign in with Google">
-                <GoogleIcon size={26}/>
+                <GoogleIcon size={31}/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.oauthBtn} accessibilityLabel="Sign in with a passkey">
-                <PasskeyIcon size={26} color="#1A1A1A"/>
+                <PasskeyIcon size={24}/>
               </TouchableOpacity>
             </View>
-            <Text style={styles.terms}>
-              By continuing, you agree to Luma's <Text style={{ textDecorationLine: 'underline' }}>Terms of Use</Text>
+            
+            <Text style={styles.terms} numberOfLines={1}>
+              By continuing, you agree to Luma’s Terms of Use<Text style={styles.termsLink} aria-hidden>Terms of Use</Text>
             </Text>
           </View>
-        </View>)}
+        </>)}
+      
+      <Text style={[styles.promoHint, { top: panelOpen ? 200.9 : 533.5 }]}>Pssst… the fun starts below</Text>
       <HomeIndicator />
     </View>);
 }
-function HostMark({ kind, size = 26 }: {
+function HostMark({ kind, size = 14 }: {
     kind: string;
     size?: number;
 }) {
     if (kind === 'scidr')
-        return <View style={{ marginRight: 8 }}><ScidrMark size={size}/></View>;
+        return <View style={{ marginRight: 8 }}><ScidrMark size={16}/></View>;
     if (kind === 'ai')
-        return <View style={{ marginRight: 8 }}><AiCollectiveMark size={size}/></View>;
+        return <View style={{ marginRight: 8 }}><AiCollectiveMark size={16}/></View>;
     if (kind === 'gear')
-        return <View style={{ marginRight: 8 }}><GearMark size={size} bg="#E7EEF5"/></View>;
-    if (kind === 'avatars' || kind === 'white') {
-        const cols = kind === 'white'
-            ? ['#EFEFF1', '#E7E7EA', '#DEDEE2']
-            : ['#7EC8A0', '#C9A0E8', '#F0B890'];
-        return (<View style={{ flexDirection: 'row', marginRight: 8 }}>
-        {cols.map((col: string, i: number) => (<View key={i} style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: col, marginLeft: i === 0 ? 0 : -8, borderWidth: 2, borderColor: '#fff' }}/>))}
-      </View>);
+        return <View style={{ marginRight: 8 }}><GearMark size={16} bg="#E7EEF5"/></View>;
+    if (kind === 'avatars') {
+        return <Image source={require('../assets/hosts/host-avatars.png')} style={{ width: 32.4, height: 11.6, marginLeft: 2.5, marginRight: 7, resizeMode: 'contain' } as any}/>;
+    }
+    if (kind === 'white') {
+        return <Image source={require('../assets/hosts/host-avatars-gray.png')} style={{ width: 32.4, height: 11.6, marginLeft: 2.5, marginRight: 7, resizeMode: 'contain' } as any}/>;
     }
     if (kind === 'book') {
-        return (<View style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#5C8A2B', alignItems: 'center', justifyContent: 'center', marginRight: 8 }}>
-        <Text style={{ color: '#fff', fontSize: 12 }}>📖</Text>
-      </View>);
+        return <Image source={require('../assets/hosts/readpark-mark.png')} style={{ width: 16, height: 16, borderRadius: 4, marginRight: 8, resizeMode: 'cover' } as any}/>;
     }
     return null;
+}
+function MaumMark() {
+    return (<View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: '#fff', borderWidth: 1, borderColor: '#E6E6E8', marginRight: 8, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ fontSize: 3.9, fontWeight: '700', color: '#2A2A2C', lineHeight: 4.5, textAlign: 'center', letterSpacing: -0.1 }}>MAUM{'\n'}MARKET</Text>
+    </View>);
+}
+function SouthParkMark() {
+    const c = colors.ink;
+    return (<View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: '#F1F1F3', marginRight: 8, alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={13.5} height={13.5} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={1.35} strokeLinecap="square" strokeLinejoin="miter">
+        
+        <SvgPath d="M7 8.6 H16.4 M7 8.6 V15.4 H16.4 M7 12 V12"/>
+        
+        <SvgPath d="M16.4 8.6 L19.4 7.4 L16.2 10.4"/>
+        <SvgPath d="M16.4 15.4 L19.4 16.6 L16.2 13.6"/>
+        
+        <SvgPath d="M10.5 8.6 L12 5.8 L13.5 8.6 M12 5.8 L12 8.6"/>
+        <SvgPath d="M10.5 15.4 L12 18.2 L13.5 15.4 M12 18.2 L12 15.4"/>
+        <SvgPath d="M7 10.5 L4.2 12 L7 13.5 M4.2 12 L7 12"/>
+        
+        <SvgPath d="M13.2 10.6 H9.6 V13.4 H13.2"/>
+        
+        <SvgPath d="M7 8.6 L9.6 10.6 M7 15.4 L9.6 13.4 M12 8.6 L12 10.6 M12 15.4 L12 13.4 M7 12 L9.6 12"/>
+      </Svg>
+    </View>);
+}
+function CodexMark() {
+    const c = colors.ink;
+    return (<View style={{ width: 16, height: 16, borderRadius: 4, backgroundColor: '#F1F1F3', marginRight: 8, alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={13} height={13} viewBox="0 0 24 24" fill={c} stroke="none">
+        <SvgPath d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7466-7.073zm-11.2854 8.4541a3.36 3.36 0 0 1-1.483-2.7761l4.8074 2.7761a3.36 3.36 0 0 1-3.3244 0zm-1.5868-5.5755V9.8994l4.8074 2.7761-4.8074 2.7761zm1.5868-8.3656a3.36 3.36 0 0 1 3.3244 0l-4.8074 2.776a3.36 3.36 0 0 1 1.483-2.776zm11.351 2.8483a3.32 3.32 0 0 1 .0422 2.7761l-4.8074-2.776 4.1049-2.3716a3.3144 3.3144 0 0 1 .6603 2.3715zM11.6742 4.855l4.8074 2.7761-4.8074 2.7761V4.855zm5.696 8.4588-4.8074 2.7761V13.31l4.8074-2.7761zm-1.582 5.5755a3.32 3.32 0 0 1-.7025.8402l-4.1049-2.3716 4.8074-2.776a3.36 3.36 0 0 1 0 4.3074zm5.1027-2.0582a3.32 3.32 0 0 1-3.5089 1.525l4.8074-2.7761a3.32 3.32 0 0 1-1.2985 1.2511zm-3.52-4.6219 4.8074-2.776a3.36 3.36 0 0 1 0 5.5523l-4.8074-2.7763zM16.5276 4.8265l4.1049 2.3716a3.32 3.32 0 0 0-.6603-2.3716 3.32 3.32 0 0 0-3.4493-1.2177zM7.8337 19.1444a3.32 3.32 0 0 1-3.5089-1.5251 3.36 3.36 0 0 1 3.5089 1.5251zm-4.8122-4.1096a3.36 3.36 0 0 1 0-5.5523l4.8074 2.7761-4.8074 2.7761zm1.3033-7.8389 4.1049 2.3716-4.8074 2.7761a3.32 3.32 0 0 1 .7025-5.1477z"/>
+      </Svg>
+    </View>);
 }
 function PopularHostMark({ kind }: {
     kind: string;
 }) {
-    if (kind === 'flower')
-        return <View style={{ marginRight: 8 }}><FlowerMark size={24} bg="#F2F1F6"/></View>;
-    if (kind === 'southpark')
-        return <View style={{ marginRight: 8 }}><GearMark size={24} bg="#EEF1F2"/></View>;
-    return (<View style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#EFECE6', marginRight: 8, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 8, fontWeight: '800', color: '#8A8272' }}>M</Text>
-    </View>);
+    const markSrc = kind === 'flower' ? require('../assets/hosts/codex-mark.png')
+        : kind === 'southpark' ? require('../assets/hosts/sp-mark.png')
+            : require('../assets/hosts/maum-mark.png');
+    return <Image source={markSrc} style={{ width: 16, height: 16, borderRadius: kind === 'maum' ? 8 : 4, marginRight: 8, resizeMode: 'cover' } as any}/>;
 }
 function HomeScreen({ onOpenDetail, onScroll }: {
     onOpenDetail: (id: string) => void;
@@ -211,23 +305,35 @@ function HomeScreen({ onOpenDetail, onScroll }: {
     return (<View style={styles.screenRoot}>
       <StatusBar />
       <View style={styles.homeHeader}>
-        <View style={styles.avatar}/>
-        <Text style={styles.headerTitle}>luma<Text style={styles.sparkle}>✦</Text></Text>
+        
+        <View accessibilityRole="button" style={styles.avatarBtn}>
+          <View accessibilityRole="button" accessibilityLabel="Profile" style={[styles.avatar as any, { overflow: 'hidden' }]}>
+            <Image source={require('../assets/avatar-header.png')} style={styles.avatar as any}/>
+          </View>
+        </View>
+        <View accessibilityRole="button" accessibilityLabel="luma" style={{ position: 'relative', width: 54, height: 28, marginLeft: -2.25, marginTop: -2.6 }}>
+          <Text style={[styles.headerTitle, { position: 'absolute', left: 0, top: 0, transform: [{ scaleX: 0.92 }] }]}>luma</Text>
+          <View style={{ position: 'absolute', left: 50, top: 5.8 }}>
+            <SparkleIcon size={8.5} color={colors.ink}/>
+          </View>
+        </View>
         <View style={{ flex: 1 }}/>
-        <SettingsGear size={26} color={colors.ink}/>
+        <View accessibilityRole="button" accessibilityLabel="Settings" style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>
+          <Image source={require('../assets/hosts/settings-gear.png')} style={{ width: 19, height: 20.5, resizeMode: 'contain' } as any}/>
+        </View>
       </View>
       <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false} scrollEventThrottle={16} onScroll={(e: any) => onScroll?.(e.nativeEvent.contentOffset.y)}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Your Events</Text>
           <View style={{ flex: 1 }}/>
-          <Text style={styles.viewAll}>View All <ChevronRight size={18} color={colors.inkMuted}/></Text>
+          
+          <Text style={styles.viewAll}>View All</Text>
+          <View style={{ marginLeft: 2.1 }}><ChevronRight size={18} color={colors.inkMuted}/></View>
         </View>
         
         <View style={styles.emptyCard}>
-          <View style={styles.emptyIcon}>
-            <CalendarEmptyIcon size={72} color="#D6D6DB"/>
-          </View>
-          <View style={{ flex: 1 }}>
+          <Image source={require('../assets/hosts/empty-tile.png')} style={{ width: 64, height: 64, borderRadius: 15 } as any}/>
+          <View style={{ flex: 1, marginRight: 16 }}>
             <Text style={styles.emptyTitle}>No Upcoming Events</Text>
             <Text style={styles.emptyDesc}>Events you are hosting or going to will show up here.</Text>
           </View>
@@ -242,33 +348,38 @@ function HomeScreen({ onOpenDetail, onScroll }: {
         {feedEvents.map((ev, i) => {
             const showDate = i === 0 || feedEvents[i - 1].dateLabel !== ev.dateLabel;
             return (<View key={ev.id}>
-            {showDate && (<View style={styles.dateDivider}>
+            {showDate && (<View style={[styles.dateDivider, styles.dateSticky, i > 0 && { marginTop: 10 }]}>
                 <Text style={styles.dateBold}>{ev.dateLabel}</Text>
                 <Text style={styles.dateSlash}> / </Text>
                 <Text style={styles.dateDay}>{ev.dayLabel}</Text>
               </View>)}
-            <TouchableOpacity style={[styles.feedRow, !showDate && { marginTop: 16 }]} onPress={() => onOpenDetail(ev.id)} accessibilityLabel={`${ev.title}, ${ev.time}, ${ev.location}, By ${ev.host}`}>
+            {!showDate && (<View style={{ height: 1, backgroundColor: '#F0F0F1', marginLeft: 108, marginBottom: 0, marginTop: 0 }}/>)}
+            
+            <TouchableOpacity style={[styles.feedRow, showDate ? { paddingTop: 8 } : { marginTop: 0, paddingTop: 16, paddingBottom: 16 }]} onPress={() => onOpenDetail(ev.id)}>
               <Image source={ev.cover} style={styles.feedCover as any}/>
-              <View style={styles.feedBody}>
+              
+              <View style={styles.feedBody} accessibilityRole="button" accessibilityLabel={[ev.title, ev.time, ev.location, ev.price, `By ${ev.host}`].filter(Boolean).join(', ')}>
                 {ev.hostKind !== 'none' && (<View style={styles.hostRow}>
                     <HostMark kind={ev.hostKind} size={26}/>
-                    <Text style={[styles.hostName, { flex: 1 }]} numberOfLines={1}>{ev.host}</Text>
+                    <Text style={[styles.hostName, { flexShrink: 1 }]} numberOfLines={1}>{ev.host}</Text>
+                    {ev.hostKind === 'book' && <Image source={require('../assets/hosts/books.png')} style={{ width: 15, height: 15, marginLeft: 4, resizeMode: 'contain' } as any}/>}
                     {ev.price ? <Text style={styles.priceTag}>{ev.price}</Text> : null}
+                    <View style={{ flex: 1 }}/>
                   </View>)}
                 <Text style={styles.feedTitle} numberOfLines={2}>{ev.title}</Text>
-                {ev.inlineMeta && ev.location ? (<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
-                    <ClockIcon size={18}/>
+                {ev.inlineMeta && ev.location ? (<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11.2, flexWrap: 'wrap' }}>
+                    <ClockIcon size={14}/>
                     <Text style={[styles.metaText, { marginLeft: 6 }]}>{ev.time}</Text>
-                    <View style={{ width: 20 }}/>
-                    <PinIcon size={18}/>
+                    <View style={{ width: 16.5 }}/>
+                    <PinIcon size={14}/>
                     <Text style={[styles.metaText, { marginLeft: 6 }]}>{ev.location}</Text>
                   </View>) : (<>
                     <View style={styles.metaRow}>
-                      <ClockIcon size={18}/>
+                      <ClockIcon size={14}/>
                       <Text style={[styles.metaText, { marginLeft: 6 }]}>{ev.time}</Text>
                     </View>
-                    {ev.location ? (<View style={styles.metaRow}>
-                        <PinIcon size={18}/>
+                    {ev.location ? (<View style={[styles.metaRow, { marginTop: 7 }]}>
+                        <PinIcon size={14}/>
                         <Text style={[styles.metaText, { marginLeft: 6 }]}>{ev.location}</Text>
                       </View>) : null}
                   </>)}
@@ -279,6 +390,51 @@ function HomeScreen({ onOpenDetail, onScroll }: {
       </ScrollView>
     </View>);
 }
+const avatarImg = require('../assets/avatar-disc.png');
+function HeaderAvatar() {
+    return (<View accessibilityRole="button" style={styles.avatarBtn}>
+      <View style={styles.discAvatarClip as any}>
+        <Image source={avatarImg} style={styles.discAvatar as any} resizeMode="cover"/>
+      </View>
+      <View accessibilityRole="button" accessibilityLabel="Profile" style={styles.profileTarget}/>
+    </View>);
+}
+const previewCovers = [
+    require('../assets/covers/cover-afore.png'),
+    require('../assets/covers/cover-thinking2.png'),
+    require('../assets/covers/cover-fog.png'),
+];
+function PopularCard({ ev, cover, preview, onPress, isLast, isFirst }: {
+    ev?: any;
+    cover?: any;
+    preview?: boolean;
+    onPress?: () => void;
+    isLast?: boolean;
+    isFirst?: boolean;
+}) {
+    const coverPad = isFirst ? 18 : 9;
+    const bodyPad = isFirst ? 21 : 9;
+    return (<View style={styles.popCardWrap}>
+      <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={styles.popCard} disabled={preview}>
+        <Image source={cover} style={[styles.popCover as any, { marginTop: coverPad }]} resizeMode="cover"/>
+        {!preview && ev && (<View style={[styles.popCardBody, { marginTop: bodyPad }]} accessibilityRole="button" accessibilityLabel={[ev.title, ev.time, ev.badge?.label, `By ${ev.host}`].filter(Boolean).join(', ')}>
+            <View style={styles.popHostRow}>
+              <PopularHostMark kind={ev.hostMark}/>
+              <Text style={[styles.popHost, { flex: 1 }]} numberOfLines={1}>{ev.host}</Text>
+              {ev.badge && (<View style={[styles.badge, { backgroundColor: ev.badge.bg }]}>
+                  <Text style={[styles.badgeText, { color: ev.badge.color }]}>{ev.badge.label}</Text>
+                </View>)}
+            </View>
+            <Text style={styles.popTitle} numberOfLines={2}>{ev.title}</Text>
+            <View style={styles.popTimeRow}>
+              <ClockIcon size={14} color={colors.inkMuted}/>
+              <Text style={styles.popTime}>{ev.time}</Text>
+            </View>
+          </View>)}
+      </TouchableOpacity>
+      {!isLast && <View style={styles.popHairline}/>}
+    </View>);
+}
 function DiscoverScreen({ onOpenDetail, onScroll }: {
     onOpenDetail: (id: string) => void;
     onScroll?: (y: number) => void;
@@ -287,162 +443,328 @@ function DiscoverScreen({ onOpenDetail, onScroll }: {
         family: <CatFamily />, tech: <CatTech />, food: <CatFood />,
         books: <CatBooks />, games: <CatGames />, ai: <CatAI />, running: <CatRunning />,
     };
+    const row1 = categories.slice(0, 4);
+    const row2 = categories.slice(4, 8);
     return (<View style={styles.screenRoot}>
       <StatusBar />
       <View style={styles.homeHeader}>
-        <View style={styles.avatar}/>
-        <Text style={styles.headerTitle}>Discover</Text>
+        <HeaderAvatar />
+        <Text style={styles.screenTitle}>Discover</Text>
         <View style={{ flex: 1 }}/>
-        <MapIcon size={26} color={colors.ink}/>
-        <View style={{ width: 16 }}/>
-        <SearchIcon size={26} color={colors.ink}/>
+        <View accessibilityRole="button" accessibilityLabel="Map" style={[styles.headerIconBtn, { marginRight: -4 }]}>
+          <MapIcon size={25} color={colors.ink}/>
+        </View>
+        <View accessibilityRole="button" accessibilityLabel="Search" style={styles.headerIconBtn}>
+          <SearchIcon size={25} color={colors.ink}/>
+        </View>
       </View>
       <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false} scrollEventThrottle={16} onScroll={(e: any) => onScroll?.(e.nativeEvent.contentOffset.y)}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>San Francisco</Text>
+        <View style={styles.discCityRow}>
+          <View>
+            <Text style={styles.discCity}>San Francisco</Text>
+            <Text style={styles.discPopular}>Popular Events</Text>
+          </View>
           <View style={{ flex: 1 }}/>
-          <Text style={styles.viewAll}>View All <ChevronRight size={18} color={colors.inkMuted}/></Text>
+          <Text style={styles.discViewAll}>View All</Text>
+          <View style={{ marginLeft: 2.1 }}><ChevronRight size={17} color={colors.inkMuted}/></View>
         </View>
-        <Text style={styles.popularTitle}>Popular Events</Text>
 
-        {popularEvents.map((ev) => (<TouchableOpacity key={ev.id} style={styles.popularRow} onPress={() => onOpenDetail(ev.id)}>
-            <Image source={ev.cover} style={styles.popularCover as any}/>
-            <View style={styles.popularBody}>
-              <View style={styles.hostRow}>
-                <PopularHostMark kind={ev.hostMark}/>
-                <Text style={[styles.hostName, { flex: 1 }]} numberOfLines={1}>{ev.host}</Text>
-                {ev.badge && (<View style={[styles.badge, { backgroundColor: ev.badge.bg }]}>
-                    <Text style={[styles.badgeText, { color: ev.badge.color }]}>{ev.badge.label}</Text>
-                  </View>)}
-              </View>
-              <Text style={styles.feedTitle} numberOfLines={2}>{ev.title}</Text>
-              <View style={styles.metaRow}>
-                <ClockIcon size={17}/>
-                <Text style={styles.metaText}>{ev.time}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>))}
+        
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.popularGrid} contentContainerStyle={{ paddingLeft: 0 }}>
+          <View style={styles.popularColumn}>
+            {popularEvents.map((ev, i) => (<PopularCard key={ev.id} ev={ev} cover={ev.cover} isFirst={i === 0} isLast={i === popularEvents.length - 1} onPress={() => onOpenDetail(ev.id)}/>))}
+          </View>
+          <View style={styles.popularColumn}>
+            {previewCovers.map((c, i) => (<PopularCard key={i} preview cover={c} isFirst={i === 0} isLast={i === previewCovers.length - 1}/>))}
+          </View>
+        </ScrollView>
 
-        <Text style={[styles.pickedTitle, { marginTop: 28 }]}>Browse by Category</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 12 }} contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}>
-          {categories.map((cat) => (<View key={cat.id} style={styles.catChip}>
+        <Text style={styles.browseTitle}>Browse by Category</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catRow} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
+          {row1.map((cat) => (<View key={cat.id} style={styles.catChip} accessibilityRole="button">
               {catIcons[cat.icon]}
-              <Text style={styles.catLabel}>{cat.label}</Text>
+              <Text style={[styles.catLabel, { letterSpacing: (cat as any).track }]}>{cat.label}</Text>
             </View>))}
         </ScrollView>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catRow2} contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}>
+          {row2.map((cat) => (<View key={cat.id} style={styles.catChip} accessibilityRole="button">
+              {catIcons[cat.icon]}
+              <Text style={[styles.catLabel, { letterSpacing: (cat as any).track }]}>{cat.label}</Text>
+            </View>))}
+        </ScrollView>
+
+        
+        <View style={styles.citiesRow}>
+          <Text style={styles.discCities}>Cities</Text>
+          <View style={{ flex: 1 }}/>
+          <View style={styles.citiesMore} accessibilityRole="button">
+            <ChevronRight size={17} color={colors.inkMuted}/>
+          </View>
+        </View>
       </ScrollView>
     </View>);
+}
+function TicketGlyph({ size = 20, color = '#151516' }: any) {
+    return (<Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+      <Path d="M4 5a2 2 0 0 0-2 2v3.2a1.8 1.8 0 0 1 0 3.6V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3.2a1.8 1.8 0 0 1 0-3.6V7a2 2 0 0 0-2-2H4zm9 2h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z"/>
+    </Svg>);
+}
+function MailGlyph({ size = 20, color = '#E8EAEE' }: any) {
+    return (<Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8}>
+      <Rect x="3" y="5.5" width="18" height="13" rx="2.4"/>
+      <Path d="M4 7.5l8 5.6 8-5.6"/>
+    </Svg>);
 }
 function DetailScreen({ onBack }: {
     onBack: () => void;
 }) {
-    return (<View style={styles.detailRoot}>
-      <StatusBar dark/>
+    const [pinned, setPinned] = React.useState(false);
+    const [bgCss, setBgCss] = React.useState<string | null>(null);
+    React.useEffect(() => {
+        let alive = true;
+        extractCoverBackground(detailEvent.cover).then((css) => {
+            if (alive && css)
+                setBgCss(css);
+        });
+        return () => {
+            alive = false;
+        };
+    }, []);
+    return (<View style={[styles.detailRoot, bgCss ? ({ background: bgCss } as any) : null]}>
+      <View style={styles.detailStatusWrap}><StatusBar dark/></View>
       <View style={styles.detailNav}>
         <TouchableOpacity style={styles.detailNavBtn} accessibilityLabel="Back" onPress={onBack}>
           <BackArrow size={26} color="#fff"/>
         </TouchableOpacity>
+        {pinned && (<Text numberOfLines={1} style={styles.detailPinnedTitle}>{detailEvent.title}</Text>)}
         <TouchableOpacity style={styles.detailNavBtn} accessibilityLabel="Share">
           <ShareIcon size={24} color="#fff"/>
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false} onScroll={(e: any) => setPinned(e.nativeEvent.contentOffset.y > 210)} scrollEventThrottle={64}>
         
         <View style={styles.detailCoverWrap}>
           <Image source={detailEvent.cover} style={styles.detailCover as any} resizeMode="cover"/>
+          <View style={styles.detailFeatured}>
+            <Text style={styles.detailFeaturedText}>Featured in San Francisco</Text>
+          </View>
         </View>
         <View style={styles.detailBody}>
           <Text style={styles.detailTitle}>{detailEvent.title}</Text>
-          <View style={styles.hostRow}>
-            <AiCollectiveMark size={26}/>
-            <Text style={styles.detailHost}>{detailEvent.host} <ChevronRight size={18} color={colors.detailMuted}/></Text>
+          <View style={styles.detailHostRow}>
+            <Image source={require('../assets/hosts/aic-mark.png')} style={{ width: 16, height: 16, borderRadius: 4, resizeMode: 'cover' } as any}/>
+            
+            <Text style={styles.detailHost}>{detailEvent.host}</Text>
+            <ChevronRight size={18} color={colors.detailMuted}/>
           </View>
           <Text style={styles.detailTime}>{detailEvent.time}</Text>
 
           
           <View style={styles.detailActions}>
-            <View style={styles.detailAction}/>
-            <View style={styles.detailAction}/>
-            <View style={styles.detailAction}/>
-            <View style={styles.detailAction}/>
+            <TouchableOpacity style={[styles.detailAction, styles.detailActionPrimary]} accessibilityLabel="Register" activeOpacity={0.8}>
+              <Text style={[styles.detailActionLabel, styles.detailActionLabelPrimary, { width: 47.3 }]}>Register</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailAction} accessibilityLabel="Contact" activeOpacity={0.8}>
+              <Text style={[styles.detailActionLabel, { width: 45.5 }]}>Contact</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.detailAction} accessibilityLabel="More" activeOpacity={0.8}>
+              <Text style={[styles.detailActionLabel, { width: 29.1 }]}>More</Text>
+            </TouchableOpacity>
           </View>
 
-          <Text style={styles.detailSection}>Location</Text>
+          <Text style={[styles.detailSection, styles.detailSectionFirst]}>Location</Text>
           <View style={styles.detailDivider}/>
           <Text style={styles.detailLocation}>{detailEvent.location}</Text>
           <Text style={styles.detailAddress}>{detailEvent.address}</Text>
+          
+          <View style={styles.detailMap} accessibilityRole="button" accessibilityLabel="Map">
+            <View style={[styles.mapRoad, { top: '38%', height: 9 }]}/>
+            <View style={[styles.mapRoad, { left: '58%', width: 8, height: '100%' }]}/>
+            <View style={[styles.mapRoad, { top: '70%', height: 5, opacity: 0.7 }]}/>
+            <View style={styles.mapPin}>
+              <View style={styles.mapPinHead}/>
+              <View style={styles.mapPinTip}/>
+            </View>
+            
+            <Text style={styles.mapLabel} {...({ 'aria-hidden': true } as any)}>Computer{'\n'}History Museum</Text>
+          </View>
+
+          <View style={styles.detailHostHead}>
+            <Text style={styles.detailSectionInline}>Host</Text>
+            
+            <TouchableOpacity accessibilityRole="button" style={styles.detailHostContactBtn} activeOpacity={0.8}>
+              <Text style={styles.detailHostContact}>Contact</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.detailDividerTight}/>
+          <View style={styles.detailSpeakerRow}>
+            <Image source={require('../assets/hosts/avatar.png')} style={styles.detailSpeakerAvatar as any}/>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.detailSpeakerName}>Brandon Nader</Text>
+              <Text style={styles.detailSpeakerRole}>VP Marketing at ThinkingAI</Text>
+            </View>
+          </View>
+
+          <Text style={[styles.detailSection, styles.detailSectionGoing]}>538 Going</Text>
+          <View style={styles.detailDivider}/>
+          <View style={styles.detailGoingRow}>
+            <Image source={require('../assets/hosts/host-avatars.png')} style={{ width: 108, height: 28, borderRadius: 14, resizeMode: 'cover' } as any}/>
+          </View>
+          <Text style={styles.detailGoingNames}>Lucas Miranda, amy trinh, Maria Sorokina, Olivia Qian, and 534 more</Text>
+
+          <Text style={[styles.detailSection, styles.detailSectionAbout]}>About Event</Text>
+          <View style={styles.detailDivider}/>
+          
+          <View style={styles.detailAboutMedia} accessibilityRole="button">
+            <View style={styles.detailAboutImage} accessibilityRole="button" accessibilityLabel="Image"/>
+          </View>
+          <Text style={styles.detailAbout}>{detailEvent.about}</Text>
         </View>
       </ScrollView>
+      <View style={{ position: 'absolute', bottom: 10, left: 0, right: 0, alignItems: 'center' } as any}><View style={{ width: 107, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.85)' } as any}/></View>
+    </View>);
+}
+const galleryCats = [
+    { id: 'suggested', label: 'Suggested', track: 0.0, icon: <SparkleIcon size={17} color="#151516"/> },
+    { id: 'school', label: 'School', track: 0.05, icon: <CatTech size={17} color="#8E8E93"/> },
+    { id: 'halloween', label: 'Halloween', track: 0.15, icon: <CatGames size={17} color="#8E8E93"/> },
+    { id: 'thanksgiving', label: 'Thanksgiving', track: 0.42, icon: <CatFood size={17} color="#8E8E93"/> },
+];
+const galleryTiles = [
+    { label: 'Halloween', cover: require('../assets/covers/card-poker.png') },
+    { label: 'Thanksgiving', cover: require('../assets/covers/card-thanksgiving.png') },
+    { label: 'Invitation', cover: require('../assets/covers/card-coffee.png') },
+    { label: 'Birthday', cover: require('../assets/covers/card-blue.png') },
+];
+function CoverGallery({ onBack }: {
+    onBack: () => void;
+}) {
+    return (<View style={styles.galleryRoot} accessibilityRole={'dialog' as any} accessibilityViewIsModal={true}>
+      <StatusBar />
+      <View style={styles.gallerySearchRow}>
+        <TouchableOpacity accessibilityLabel="Back" onPress={onBack} style={styles.galleryBack} activeOpacity={0.7}>
+          <BackArrow size={26} color={colors.ink}/>
+        </TouchableOpacity>
+        <View style={styles.gallerySearchBox}>
+          <Text style={styles.gallerySearchPlaceholder}>Search cover images…</Text>
+        </View>
+      </View>
+      <View style={styles.galleryCats}>
+        {galleryCats.map((c, i) => (<View key={c.id} style={styles.galleryCat}>
+            {c.icon}
+            <Text style={[styles.galleryCatLabel, { letterSpacing: (c as any).track }, i === 0 && styles.galleryCatActive]}>{c.label}</Text>
+            {i === 0 && <View style={styles.galleryCatUnderline}/>}
+          </View>))}
+      </View>
+      
+      <View style={styles.galleryScrollbar} {...({ tabIndex: 0 } as any)}/>
+      <ScrollView style={styles.galleryScroll} contentContainerStyle={{ paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+        <View style={styles.galleryHero}>
+          <Text style={styles.galleryHeroTitle}>School</Text>
+          <Text style={styles.galleryHeroCount}>21 Images</Text>
+          <Image source={require('../assets/covers/card-poker.png')} style={styles.galleryHeroCardA as any}/>
+          <Image source={require('../assets/covers/card-blue.png')} style={styles.galleryHeroCardB as any}/>
+        </View>
+        <View style={styles.galleryGrid}>
+          {galleryTiles.map((t) => (<TouchableOpacity key={t.label} style={styles.galleryTile} activeOpacity={0.85} accessibilityRole="button">
+              <Image source={t.cover} style={styles.galleryTileImg as any} resizeMode="cover"/>
+              
+              <View style={styles.galleryTileLabelWrap} {...({ 'aria-hidden': true } as any)}>
+                <Text style={styles.galleryTileLabel}>{t.label}</Text>
+              </View>
+            </TouchableOpacity>))}
+        </View>
+      </ScrollView>
+      <View style={styles.galleryFooter}>
+        <TouchableOpacity style={styles.galleryChooseBtn} accessibilityLabel="Choose From Library">
+          <Text style={styles.galleryChooseText}>Choose From Library</Text>
+        </TouchableOpacity>
+      </View>
+      <HomeIndicator />
     </View>);
 }
 function CreateScreen({ onBack }: {
     onBack: () => void;
 }) {
     const [approval, setApproval] = React.useState(false);
+    const [gallery, setGallery] = React.useState(false);
+    if (gallery)
+        return <CoverGallery onBack={() => setGallery(false)}/>;
     return (<View style={styles.createRoot}>
       <StatusBar />
       <View style={styles.createHeader}>
-        <TouchableOpacity accessibilityLabel="Back" onPress={onBack}><BackArrow size={28} color={colors.ink}/></TouchableOpacity>
+        <TouchableOpacity accessibilityLabel="Back" onPress={onBack} style={styles.iconBtn48} activeOpacity={0.7}>
+          <BackArrow size={26} color={colors.ink}/>
+        </TouchableOpacity>
         <Text style={styles.createTitle}>Create Event</Text>
         <View style={{ flex: 1 }}/>
-        <View style={styles.avatar}/>
-        <ChevronDown size={20} color={colors.inkMuted}/>
+        
+        <View style={styles.createAvatarGroup} accessibilityRole="button">
+          <Image source={require('../assets/hosts/avatar-circle.png')} style={[styles.createAvatarImg, { pointerEvents: 'none' }] as any}/>
+          <View style={styles.createAvatarTarget} accessibilityRole="button" accessibilityLabel="yong zhou"/>
+          
+          <ChevronDown size={18} color="#A8A8AC"/>
+        </View>
       </View>
-      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 16 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scroll} contentContainerStyle={{ paddingBottom: 130 }} showsVerticalScrollIndicator={false}>
+        
         <View style={styles.restorePill}>
-          <Text style={styles.restoreText}>↻ Restore draft?</Text>
-          <CloseX size={18} color={colors.inkMuted}/>
+          <View style={styles.restoreClock}><ClockIcon size={18} color={colors.inkMuted}/></View>
+          <Text style={styles.restoreText} numberOfLines={1}>Restore draft?</Text>
+          <TouchableOpacity accessibilityRole="button" style={styles.restoreClose} activeOpacity={0.7}>
+            <CloseX size={18} color={colors.inkMuted}/>
+          </TouchableOpacity>
         </View>
         
-        <View style={styles.coverUpload}>
-          <View style={styles.coverUploadBtn}>
-            <ImageAddIcon size={22}/>
-          </View>
-        </View>
+        <TouchableOpacity style={styles.coverUpload} accessibilityRole="button" accessibilityLabel="Change cover" onPress={() => setGallery(true)} activeOpacity={0.9}>
+          <TouchableOpacity style={styles.coverUploadBtn} accessibilityRole="button" onPress={() => setGallery(true)} activeOpacity={0.85}>
+            <ImageAddIcon size={22} color="#222324"/>
+          </TouchableOpacity>
+        </TouchableOpacity>
         
         <View style={styles.inputField}>
-          <Text style={styles.placeholder}>Event Name</Text>
+          <Text style={styles.eventNameHint}>Event Name</Text>
         </View>
         
         <View style={styles.timeCard}>
-          <View style={styles.timeRow}>
+          <View style={styles.timeLineRow}>
             <View style={styles.timelineCol}>
-              <View style={[styles.timeDot, { backgroundColor: colors.inkMuted }]}/>
+              <View style={styles.timeDotFilled}/>
               <View style={styles.timelineDashed}/>
-              <View style={[styles.timeDot, { borderWidth: 2, borderColor: colors.inkMuted, backgroundColor: 'transparent' }]}/>
+              <View style={styles.timeDotHollow}/>
             </View>
-            <View style={{ flex: 1 }}>
-              <View style={styles.timeLineRow}>
-                <Text style={styles.timeLabel}>Start</Text>
-                <View style={{ flex: 1 }}/>
-                <View style={styles.datePill}><Text style={styles.datePillText}>Sun, Sep 20</Text></View>
-                <View style={[styles.datePill, { marginLeft: 8 }]}><Text style={styles.datePillText}>12:00 AM</Text></View>
-              </View>
-              <View style={styles.timeHLine}/>
-              <View style={styles.timeLineRow}>
-                <Text style={styles.timeLabel}>End</Text>
-                <View style={{ flex: 1 }}/>
-                <View style={styles.datePill}><Text style={styles.datePillText}>Sun, Sep 20</Text></View>
-                <View style={[styles.datePill, { marginLeft: 8 }]}><Text style={styles.datePillText}>1:00 AM</Text></View>
-              </View>
+            <Text style={styles.timeLabelStart}>Start</Text>
+            <View style={{ flex: 1 }}/>
+            <TouchableOpacity accessibilityRole="button" style={styles.datePill} activeOpacity={0.8}><View style={styles.pillBox}><Text style={styles.pillText}>Sun, Sep 20</Text></View></TouchableOpacity>
+            <TouchableOpacity accessibilityRole="button" style={styles.timePillA} activeOpacity={0.8}><View style={styles.pillBox}><Text style={styles.pillText}>12:00 AM</Text></View></TouchableOpacity>
+          </View>
+          <View style={styles.timeLineRow}>
+            <View style={styles.timelineCol}>
+              <View style={styles.timeDotHollow}/>
             </View>
+            <Text style={styles.timeLabelEnd}>End</Text>
+            <View style={{ flex: 1 }}/>
+            <TouchableOpacity accessibilityRole="button" style={styles.datePillEnd} activeOpacity={0.8}><View style={styles.pillBox}><Text style={styles.pillText}>Sun, Sep 20</Text></View></TouchableOpacity>
+            <TouchableOpacity accessibilityRole="button" style={styles.timePillB} activeOpacity={0.8}><View style={styles.pillBox}><Text style={styles.pillText}>1:00 AM</Text></View></TouchableOpacity>
           </View>
         </View>
         
-        <View style={styles.inputFieldRow}>
+        <View style={styles.rowCard}>
           <LocationPinInput size={22}/>
-          <Text style={[styles.placeholder, { marginLeft: 12 }]}>Choose Location</Text>
+          <Text style={styles.rowLabelLocation}>Choose Location</Text>
         </View>
         
-        <View style={styles.inputFieldRow}>
+        <View style={styles.rowCardTall}>
           <DescriptionIcon size={22}/>
-          <Text style={[styles.placeholder, { marginLeft: 12 }]}>Add Description</Text>
+          <Text style={styles.rowLabelDesc}>Add Description</Text>
         </View>
 
-        <Text style={[styles.ticketingTitle]}>Ticketing</Text>
+        <View style={styles.ticketingDivider}/>
+        <Text style={styles.ticketingTitle}>Ticketing</Text>
         <View style={styles.approvalRow}>
           <LockIcon size={20}/>
-          <Text style={[styles.placeholder, { marginLeft: 12, flex: 1 }]}>Require Approval</Text>
+          <Text style={styles.rowLabelApproval}>Require Approval</Text>
+          <View style={{ flex: 1 }}/>
           <TouchableOpacity onPress={() => setApproval(!approval)} activeOpacity={0.8} style={[styles.toggle, approval && styles.toggleOn]}>
             <View style={[styles.toggleThumb, approval && styles.toggleThumbOn]}/>
           </TouchableOpacity>
@@ -459,8 +781,8 @@ function EmptyScreen({ title, desc, notif = false }: {
     return (<View style={styles.screenRoot}>
       <StatusBar />
       <View style={styles.homeHeader}>
-        <View style={styles.avatar}/>
-        <Text style={styles.headerTitle}>{title}</Text>
+        <HeaderAvatar />
+        <Text style={styles.screenTitle}>{title}</Text>
       </View>
       <View style={styles.emptyStateWrap}>
         {notif ? (<Image source={require('../assets/covers/notif-empty.png')} style={styles.notifIllustration as any} resizeMode="contain"/>) : (<View style={styles.chatPlaceholder}>
@@ -485,11 +807,11 @@ function TabBar({ active, onChange }: {
       {tabs.map((t) => {
             const I = t.icon;
             const isActive = active === t.id;
-            return (<TouchableOpacity key={t.id} style={styles.tabItem} onPress={() => onChange(t.id)} activeOpacity={0.7}>
+            return (<TouchableOpacity key={t.id} style={styles.tabItem} onPress={() => onChange(t.id)} activeOpacity={0.7} accessibilityLabel={t.label}>
             <View style={[styles.tabIconWrap, isActive && styles.tabPillActive]}>
-              <I size={26} color={isActive ? colors.ink : colors.inkSecondary} filled={isActive}/>
+              <I size={24} color={isActive ? colors.ink : colors.inkSecondary} filled={isActive}/>
             </View>
-            <Text style={[styles.tabLabel, { color: isActive ? colors.ink : colors.inkSecondary, fontWeight: isActive ? '600' : '500' }]}>{t.label}</Text>
+            <Text style={[styles.tabLabel, { color: isActive ? colors.ink : colors.inkSecondary, fontWeight: isActive ? '700' : '600' }]}>{t.label}</Text>
           </TouchableOpacity>);
         })}
     </View>);
@@ -521,8 +843,8 @@ export default function App() {
       {tab === 'notif' && <EmptyScreen title="Notifications" desc="Notifications about your events and friends will show up here." notif/>}
       {tab === 'chat' && <EmptyScreen title="Chat" desc="Messages from your events and conversations will show up here."/>}
       <TabBar active={tab} onChange={(t) => { setTab(t); setFabCollapsed(false); lastY.current = 0; }}/>
-      {tab === 'home' && (<TouchableOpacity style={fabCollapsed ? styles.createFabSmall : styles.createFab} accessibilityLabel="Create event" onPress={() => setScreen('create')} activeOpacity={0.85}>
-          <PlusIcon size={26} color={colors.inkSecondary}/>
+      {tab === 'home' && (<TouchableOpacity style={fabCollapsed ? styles.createFabSmall : styles.createFab} accessibilityLabel="Create Event" onPress={() => setScreen('create')} activeOpacity={0.85}>
+          <PlusIcon size={24} color="#6B6B6C"/>
           {!fabCollapsed && <Text style={styles.createFabText}>Create Event</Text>}
         </TouchableOpacity>)}
     </View>);
@@ -531,148 +853,250 @@ const styles = StyleSheet.create({
     appRoot: { flex: 1, backgroundColor: colors.white, maxWidth: 480, alignSelf: 'center', width: '100%', height: '100%', overflow: 'hidden' },
     screenRoot: { flex: 1, height: '100%', backgroundColor: colors.white },
     scroll: { flex: 1 },
-    statusBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 10, height: 44, gap: 4 },
-    statusTime: { fontSize: 15, fontWeight: '500' },
+    statusBar: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10, pointerEvents: 'none', flexDirection: 'row', alignItems: 'center', paddingLeft: 58, paddingRight: 28, paddingTop: 12, height: 40 },
+    statusTime: { fontSize: 14, fontWeight: '400', letterSpacing: 2.2, marginRight: 8 },
     statusIcons: { flexDirection: 'row', alignItems: 'center' },
-    homeIndicator: { width: 134, height: 5, backgroundColor: '#1A1A1A', borderRadius: 3, position: 'absolute', bottom: 8, alignSelf: 'center' },
+    homeIndicator: { width: 134, height: 5, backgroundColor: '#4A4A4D', borderRadius: 3, position: 'absolute', bottom: 14, alignSelf: 'center' },
     promoRoot: { flex: 1, height: '100%', backgroundColor: '#FFFFFF', overflow: 'hidden' },
     promoContent: {
         flex: 1, alignItems: 'center', justifyContent: 'flex-end',
-        paddingBottom: 48, zIndex: 2, paddingHorizontal: 24,
+        paddingBottom: 74.5, zIndex: 2, paddingHorizontal: 24,
     },
-    lumaWordmark: { fontSize: 34, color: colors.inkLight, fontWeight: '400', letterSpacing: 0.5, marginBottom: 8 },
-    delightful: { fontSize: 52, color: colors.inkStrong, fontWeight: '600', lineHeight: 62, textAlign: 'center' },
-    startHereText: { fontSize: 52, fontWeight: '700', lineHeight: 62, textAlign: 'center' },
-    downArrow: { marginTop: 28 },
+    lumaWordmark: { fontSize: 32, color: colors.inkLight, fontWeight: '400', letterSpacing: 0.5, marginBottom: 20 },
+    delightful: { fontSize: 36, color: '#4C4B4C', fontWeight: '600', lineHeight: 42, textAlign: 'center' },
+    startHereText: { fontSize: 36, fontWeight: '700', lineHeight: 42, textAlign: 'center' },
+    downArrowWrap: { position: 'absolute', left: 0, right: 0, bottom: 23.1, alignItems: 'center' },
+    downArrow: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
     downArrowInner: {
-        width: 76, height: 76, borderRadius: 38, alignItems: 'center', justifyContent: 'center',
+        width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center',
         shadowColor: '#F65991', shadowOpacity: 0.35, shadowRadius: 16, shadowOffset: { width: 0, height: 6 },
     },
-    loginOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 },
+    promoHint: { position: 'absolute', left: 0, right: 0, zIndex: 3, textAlign: 'center', fontSize: 13.2, lineHeight: 16.4, color: '#FFFFFF' },
+    loginCovers: { position: 'absolute', top: -49.5, left: 0, width: 393, height: 242 },
+    loginTextBlock: { position: 'absolute', top: 298, left: 0, right: 0, alignItems: 'center', zIndex: 2 },
     loginSheet: {
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        backgroundColor: '#fff', borderTopLeftRadius: 36, borderTopRightRadius: 36,
-        paddingHorizontal: 24, paddingTop: 14, paddingBottom: 36,
-        shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 24, shadowOffset: { width: 0, height: -4 },
+        position: 'absolute', top: 470, left: 0, right: 0, bottom: 0,
+        backgroundColor: '#fff', borderTopLeftRadius: 28, borderTopRightRadius: 28,
     },
-    grabber: { width: 56, height: 5, backgroundColor: '#E5E5E8', borderRadius: 3, alignSelf: 'center', marginBottom: 24 },
-    loginSub: { fontSize: 22, color: colors.inkMuted, textAlign: 'center', lineHeight: 30, marginBottom: 28, fontWeight: '400' },
-    phoneBtn: { backgroundColor: colors.btnBlack, borderRadius: 18, height: 68, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },
-    phoneBtnText: { color: '#fff', fontSize: 26, fontWeight: '500' },
-    emailBtn: { backgroundColor: colors.btnGray, borderRadius: 18, height: 68, alignItems: 'center', justifyContent: 'center', marginBottom: 14 },
-    emailBtnText: { color: colors.ink, fontSize: 26, fontWeight: '500' },
-    oauthRow: { flexDirection: 'row', gap: 14 },
-    oauthBtn: { flex: 1, height: 68, backgroundColor: colors.btnGray, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-    terms: { fontSize: 20, color: colors.inkMuted, textAlign: 'center', marginTop: 22 },
-    homeHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 10, gap: 14 },
+    grabber: { position: 'absolute', top: -13, width: 40, height: 4, backgroundColor: '#DCDCE0', borderRadius: 2, alignSelf: 'center' },
+    loginSub: { position: 'absolute', top: 24, left: 32, right: 32, fontSize: 15, color: '#737373', textAlign: 'center', lineHeight: 20, fontWeight: '400' },
+    phoneBtn: { position: 'absolute', top: 83, left: 16, right: 16, height: 50, paddingHorizontal: 12, backgroundColor: colors.btnBlack, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+    phoneBtnText: { width: '100%', textAlign: 'center', color: '#fff', fontSize: 16.3, fontWeight: '500' },
+    emailBtn: { position: 'absolute', top: 142, left: 16, right: 16, height: 50, paddingHorizontal: 12, backgroundColor: '#EDEDED', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+    emailBtnText: { width: '100%', textAlign: 'center', color: colors.ink, fontSize: 16.3, fontWeight: '500' },
+    oauthRow: { position: 'absolute', top: 200, left: 16, right: 16, height: 50, flexDirection: 'row', gap: 12 },
+    oauthBtn: { flex: 1, height: 50, backgroundColor: '#EDEDED', borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+    terms: { position: 'absolute', top: 270, left: 0, right: 0, fontSize: 11.8, color: colors.inkMuted, textAlign: 'center', fontWeight: '400' },
+    termsLink: { position: 'absolute' as const, right: 63.7, top: 0, color: '#151516' },
+    homeHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingTop: 4, paddingBottom: 0, gap: 8 },
+    avatarBtn: { width: 48, height: 48, marginLeft: -4, alignItems: 'center', justifyContent: 'center' },
     avatar: {
-        width: 44, height: 44, borderRadius: 22,
-        ...(Platform.OS === 'web' ? { background: 'linear-gradient(135deg,#B8D8FF 0%,#B8E8D8 45%,#D8C5F0 100%)' } as any : { backgroundColor: '#B8D8E8' }),
+        width: 40, height: 40, borderRadius: 20,
     },
-    headerTitle: { fontSize: 32, fontWeight: '700', color: colors.ink },
-    sparkle: { color: colors.ink, fontSize: 22, fontWeight: '700' },
-    sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 12 },
-    sectionTitle: { fontSize: 26, fontWeight: '700', color: colors.ink },
-    viewAll: { fontSize: 18, color: colors.inkMuted, fontWeight: '400', flexDirection: 'row' },
-    pickedTitle: { fontSize: 26, fontWeight: '700', color: colors.ink, paddingHorizontal: 16, marginTop: 26 },
-    popularTitle: { fontSize: 26, fontWeight: '500', color: colors.inkMuted, paddingHorizontal: 16, marginTop: 4 },
-    emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 16, gap: 14 },
-    emptyIcon: { width: 120, height: 120, borderRadius: 20, backgroundColor: '#F5F5F7', alignItems: 'center', justifyContent: 'center' },
-    emptyTitle: { fontSize: 22, fontWeight: '500', color: colors.inkMuted },
-    emptyDesc: { fontSize: 18, color: colors.inkLight, marginTop: 4, lineHeight: 26 },
-    nearbyRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 8 },
-    nearbyText: { fontSize: 24, color: colors.inkMuted, fontWeight: '400' },
-    dateDivider: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: 16, marginTop: 20 },
-    dateBold: { fontSize: 22, fontWeight: '600', color: colors.ink },
-    dateSlash: { fontSize: 22, color: colors.inkMuted },
-    dateDay: { fontSize: 22, color: colors.inkMuted },
-    feedRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 12 },
-    feedCover: { width: 120, height: 120, borderRadius: 14, backgroundColor: '#E8E8EC' },
-    feedBody: { flex: 1, marginLeft: 14, justifyContent: 'flex-start' },
-    hostRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
-    hostDot: { width: 20, height: 20, borderRadius: 10, marginRight: 8 },
-    hostName: { fontSize: 16, color: colors.inkSecondary, fontWeight: '400' },
-    priceTag: { fontSize: 14, fontWeight: '700', color: '#16A34A', backgroundColor: '#DCFCE7', paddingHorizontal: 9, paddingVertical: 4, borderRadius: 9, overflow: 'hidden' },
-    feedTitle: { fontSize: 20, fontWeight: '600', color: colors.ink, lineHeight: 26, marginBottom: 4 },
-    metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-    metaText: { fontSize: 16, color: colors.inkMuted, marginLeft: 8 },
-    popularRow: { flexDirection: 'row', paddingHorizontal: 16, marginTop: 16, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.divider },
-    popularCover: { width: 120, height: 120, borderRadius: 14, backgroundColor: '#E8E8EC' },
-    popularBody: { flex: 1, marginLeft: 14 },
-    badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8, marginLeft: 8 },
-    badgeText: { fontSize: 13, fontWeight: '600' },
-    catChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, height: 48, borderWidth: 1, borderColor: colors.border, borderRadius: 14, gap: 10 },
-    catLabel: { fontSize: 18, fontWeight: '500', color: colors.ink },
-    detailRoot: { flex: 1, height: '100%', backgroundColor: colors.detailBg, ...(Platform.OS === 'web' ? { background: 'linear-gradient(180deg,#0A0922 0%,#141228 60%,#1A1830 100%)' } as any : {}) },
-    detailNav: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 18, paddingTop: 52, paddingBottom: 10 },
-    detailNavBtn: { width: 50, height: 50, borderRadius: 25, backgroundColor: 'rgba(255,255,255,0.13)', alignItems: 'center', justifyContent: 'center' },
-    detailCoverWrap: { marginHorizontal: 15, marginTop: 4, borderRadius: 24, overflow: 'hidden' as const },
-    detailCover: { width: '100%', height: 390, backgroundColor: '#1a1a2e' },
+    headerTitle: { fontSize: 24, fontWeight: '700', color: colors.ink },
+    screenTitle: { fontSize: 21, fontWeight: '700', color: colors.ink, letterSpacing: -0.23 },
+    sparkle: { color: colors.ink, fontSize: 14, fontWeight: '700', marginTop: 0, marginLeft: 1, lineHeight: 20 },
+    sectionHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 8 },
+    sectionTitle: { fontSize: 19, fontWeight: '700', color: colors.ink },
+    viewAll: { fontSize: 16, color: colors.inkMuted, fontWeight: '400', flexDirection: 'row' },
+    pickedTitle: { fontSize: 19, fontWeight: '700', color: colors.ink, paddingHorizontal: 16, marginTop: 26.6 },
+    popularTitle: { fontSize: 19, fontWeight: '600', color: colors.inkMuted, paddingHorizontal: 16, marginTop: 2 },
+    emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 17.9, gap: 16 },
+    emptyIcon: { width: 64, height: 64, borderRadius: 15, backgroundColor: colors.emptyTile, alignItems: 'center', justifyContent: 'center' },
+    emptyTitle: { fontSize: 16, fontWeight: '500', color: colors.inkMuted },
+    emptyDesc: { fontSize: 14, color: colors.inkMuted, marginTop: 6.2, lineHeight: 18 },
+    nearbyRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 3.3 },
+    nearbyText: { fontSize: 19, color: colors.inkMuted, fontWeight: '500' },
+    dateDivider: { flexDirection: 'row', alignItems: 'baseline', paddingHorizontal: 16, marginTop: 11.3 },
+    dateSticky: { position: 'sticky', top: 14.2, zIndex: 5, backgroundColor: colors.white } as any,
+    dateBold: { fontSize: 16, fontWeight: '600', color: colors.ink, letterSpacing: -0.16 },
+    dateSlash: { fontSize: 16, color: colors.inkMuted, marginRight: 6 },
+    dateDay: { fontSize: 16, color: colors.inkMuted },
+    feedRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 10, paddingBottom: 16 },
+    feedCover: { width: 80, height: 80, borderRadius: 12, backgroundColor: '#E8E8EC', alignSelf: 'flex-start' },
+    feedBody: { flex: 1, marginLeft: 12, justifyContent: 'flex-start' },
+    hostRow: { flexDirection: 'row', alignItems: 'center', minHeight: 16, marginTop: 3, marginBottom: 2.9 },
+    hostDot: { width: 16, height: 16, borderRadius: 8, marginRight: 7 },
+    hostName: { fontSize: 12, color: colors.inkSecondary, fontWeight: '400' },
+    priceTag: { fontSize: 13, fontWeight: '700', color: '#16A34A', backgroundColor: '#DCFCE7', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, overflow: 'hidden' },
+    feedTitle: { fontSize: 16, fontWeight: '600', color: colors.ink, lineHeight: 23.3, marginBottom: 0 },
+    metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 9.6 },
+    metaText: { fontSize: 14, color: colors.inkSecondary, marginLeft: 6 },
+    headerIconBtn: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+    discAvatarClip: { width: 48, height: 48, borderRadius: 24, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+    discAvatar: { width: 57.4, height: 57.4 },
+    profileTarget: { position: 'absolute' as const, left: 4, top: 4, width: 40, height: 40 },
+    discCityRow: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16, marginTop: 8 },
+    discCity: { fontSize: 19, fontWeight: '700', color: colors.ink, lineHeight: 25 },
+    discPopular: { fontSize: 19, fontWeight: '500', color: colors.inkMuted, lineHeight: 25, marginTop: 2.35 },
+    discViewAll: { fontSize: 16, color: colors.inkMuted, marginTop: 3 },
+    popularGrid: { marginTop: 16 },
+    popularColumn: { width: 343.5 },
+    popCardWrap: { width: 343.5, height: 133 },
+    popCard: { height: 116, width: 343.5, flexDirection: 'row', paddingLeft: 16 },
+    popHairline: { position: 'absolute', left: 92, right: 4, top: 124, height: 1, backgroundColor: '#F0F0F1' },
+    popCover: { width: 80, height: 80, borderRadius: 12, marginLeft: 0, marginTop: 9, backgroundColor: '#E8E8EC' },
+    popCardBody: { marginLeft: 12, marginTop: 9, width: 231.4 },
+    popHostRow: { flexDirection: 'row', alignItems: 'center', height: 22 },
+    popHost: { fontSize: 13, color: colors.inkSecondary, fontWeight: '400' },
+    popTitle: { fontSize: 15, fontWeight: '500', color: colors.ink, lineHeight: 21, marginTop: 9 },
+    popTimeRow: { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
+    popTime: { fontSize: 15, color: colors.inkMuted, marginLeft: 8 },
+    badge: { paddingHorizontal: 9, paddingVertical: 0, height: 11, borderRadius: 8, marginLeft: 7, alignItems: 'center', justifyContent: 'center' },
+    badgeText: { fontSize: 11, fontWeight: '600', lineHeight: 12.5, marginTop: 0 },
+    browseTitle: { fontSize: 19, fontWeight: '700', color: colors.ink, paddingHorizontal: 16, marginTop: 22 },
+    catRow: { marginTop: 13 },
+    catRow2: { marginTop: 0 },
+    catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 13.5, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
+    catLabel: { fontSize: 16, fontWeight: '500', color: colors.ink },
+    citiesRow: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16, marginTop: 17.65 },
+    discCities: { fontSize: 19, fontWeight: '700', color: colors.ink, lineHeight: 25, width: 53.1 },
+    citiesMore: { width: 79, height: 13.5, marginTop: 0.55, alignItems: 'center', justifyContent: 'center' },
+    detailRoot: { flex: 1, height: '100%', backgroundColor: colors.detailBg },
+    detailStatusWrap: { position: 'absolute' as const, top: 0, left: 0, right: 0, zIndex: 11 },
+    detailNav: { position: 'absolute' as const, top: 0, left: 0, right: 0, zIndex: 10, flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 8, paddingRight: 12, paddingTop: 4, paddingBottom: 8 },
+    detailNavBtn: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.08)', alignItems: 'center', justifyContent: 'center' },
+    detailCoverWrap: { marginHorizontal: 16, marginTop: 65, borderRadius: 22, overflow: 'hidden' as const },
+    detailCover: { width: '100%', height: 393, backgroundColor: '#1a1a2e' },
     featuredBar: { backgroundColor: 'rgba(0,0,0,0.5)', paddingVertical: 10, alignItems: 'center' },
-    featuredText: { color: '#fff', fontSize: 15, fontWeight: '500' },
-    detailBody: { paddingHorizontal: 18, marginTop: 22 },
-    detailTitle: { fontSize: 30, fontWeight: '700', color: colors.detailText, lineHeight: 38 },
-    detailHost: { fontSize: 18, color: colors.detailMuted, marginLeft: 8 },
-    detailTime: { fontSize: 18, color: colors.detailMuted, marginTop: 8 },
-    detailActions: { flexDirection: 'row', gap: 12, marginTop: 24 },
-    detailAction: { flex: 1, height: 86, backgroundColor: 'rgba(255,255,255,0.10)', borderRadius: 18 },
-    detailSection: { fontSize: 18, fontWeight: '600', color: colors.detailMuted, marginTop: 28 },
-    detailDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginVertical: 10 },
-    detailLocation: { fontSize: 22, fontWeight: '500', color: colors.detailText },
-    detailAddress: { fontSize: 18, color: colors.detailMuted, marginTop: 4, lineHeight: 26 },
-    createRoot: { flex: 1, height: '100%', backgroundColor: colors.bgGray },
-    createHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, gap: 12 },
-    createTitle: { fontSize: 26, fontWeight: '600', color: colors.ink },
-    restorePill: { alignSelf: 'center', flexDirection: 'row', alignItems: 'center', backgroundColor: '#ECECEE', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, gap: 10, marginTop: 8 },
-    restoreText: { fontSize: 17, color: colors.inkMuted },
-    coverUpload: { height: 280, backgroundColor: '#EDEEEF', borderRadius: 16, marginTop: 16, position: 'relative' },
-    coverUploadBtn: {
-        position: 'absolute', right: 16, bottom: 16, width: 48, height: 48, borderRadius: 24,
-        backgroundColor: colors.btnBlack, alignItems: 'center', justifyContent: 'center',
+    featuredText: { color: '#fff', fontSize: 14, fontWeight: '500' },
+    detailBody: { paddingHorizontal: 16, marginTop: 14.95 },
+    detailTitle: { fontSize: 27, fontWeight: '600', color: colors.detailText, lineHeight: 32 },
+    detailHostRow: { flexDirection: 'row', alignItems: 'center', minHeight: 16, marginTop: 13.3 },
+    detailHost: { fontSize: 16, color: colors.detailMuted, marginLeft: 6.2 },
+    detailTime: { fontSize: 16, color: colors.detailMuted, marginTop: 11 },
+    detailActions: { flexDirection: 'row', gap: 6, height: 52, marginTop: 41.75 },
+    detailAction: {
+        flex: 1, height: 52, backgroundColor: 'rgba(255,255,255,0.09)', borderRadius: 16,
+        alignItems: 'center', paddingTop: 8.25,
     },
-    inputField: { backgroundColor: '#fff', borderRadius: 24, height: 64, justifyContent: 'center', paddingHorizontal: 20, marginTop: 16 },
-    inputFieldRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 24, height: 64, paddingHorizontal: 20, marginTop: 12 },
-    placeholder: { fontSize: 22, color: colors.inkPlaceholder },
-    timeCard: { backgroundColor: '#fff', borderRadius: 28, marginTop: 12, paddingHorizontal: 18, paddingVertical: 14 },
-    timeRow: { flexDirection: 'row' },
-    timelineCol: { width: 24, alignItems: 'center', paddingTop: 14 },
-    timeLineRow: { flexDirection: 'row', alignItems: 'center', height: 56 },
-    timeHLine: { height: 1, backgroundColor: '#EEEEEF', marginLeft: 4 },
-    timeDot: { width: 14, height: 14, borderRadius: 7 },
-    timelineDashed: { width: 0, height: 30, borderLeftWidth: 2, borderLeftColor: '#C4C4C9', borderStyle: 'dashed', marginVertical: 2 },
-    timeLabel: { fontSize: 20, color: colors.inkMuted },
-    datePill: { backgroundColor: '#F4F4F6', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 10 },
-    datePillText: { fontSize: 18, fontWeight: '500' },
-    ticketingTitle: { fontSize: 20, color: colors.inkMuted, marginTop: 24, marginBottom: 8 },
-    approvalRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 28, height: 72, paddingHorizontal: 22 },
-    toggle: { width: 60, height: 36, borderRadius: 18, backgroundColor: '#D6D6DB', justifyContent: 'center', paddingHorizontal: 3 },
+    detailActionPrimary: { backgroundColor: '#FFFFFF' },
+    detailActionLabel: { color: '#D1D4DD', fontSize: 11.7, fontWeight: '600', textAlign: 'center' },
+    detailActionLabelPrimary: { color: '#000000' },
+    detailSection: { fontSize: 16, fontWeight: '600', color: colors.detailMuted, marginTop: 0 },
+    detailSectionFirst: { marginTop: 1.75 },
+    detailSectionInline: { fontSize: 16, fontWeight: '600', color: colors.detailMuted },
+    detailSectionGoing: { marginTop: 2.15 },
+    detailSectionAbout: { marginTop: 22.9 },
+    detailDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginTop: 13, marginBottom: 0 },
+    detailLocation: { fontSize: 20, fontWeight: '500', color: colors.detailText, lineHeight: 24, marginTop: 3.7 },
+    detailAddress: { fontSize: 16, color: colors.detailMuted, marginTop: 1.8, lineHeight: 19 },
+    detailFeatured: { position: 'absolute' as const, left: 0, right: 0, bottom: 0, height: 34, backgroundColor: 'rgba(6,10,24,0.72)', alignItems: 'center', justifyContent: 'center' },
+    detailFeaturedText: { color: '#E8EAEE', fontSize: 13, fontWeight: '500' },
+    detailPinnedTitle: { flex: 1, color: colors.detailText, fontSize: 18, fontWeight: '600', marginHorizontal: 8 },
+    detailMap: { marginTop: 13.25, height: 120.1, borderRadius: 14, backgroundColor: '#EAE6DC', overflow: 'hidden' as const },
+    mapRoad: { position: 'absolute' as const, left: 0, right: 0, backgroundColor: '#FFFFFF' },
+    mapPin: { position: 'absolute' as const, left: '58%', top: '30%', alignItems: 'center' },
+    mapPinHead: { width: 22, height: 22, borderRadius: 11, backgroundColor: '#EA4335' },
+    mapPinTip: { width: 0, height: 0, borderLeftWidth: 6, borderRightWidth: 6, borderTopWidth: 9, borderLeftColor: 'transparent', borderRightColor: 'transparent', borderTopColor: '#EA4335', marginTop: -2 },
+    mapLabel: { position: 'absolute' as const, left: 10, top: 12, color: '#5C6068', fontSize: 12, fontWeight: '500', lineHeight: 15 },
+    detailHostHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 11.65 },
+    detailHostContact: { fontSize: 16, color: colors.detailText, fontWeight: '500' },
+    detailHostContactBtn: { width: 54.2, height: 48, alignItems: 'center', justifyContent: 'center' },
+    detailDividerTight: { height: 1, backgroundColor: 'rgba(255,255,255,0.15)', marginTop: 5 },
+    detailSpeakerRow: { flexDirection: 'row', alignItems: 'flex-start', marginTop: 1.75 },
+    detailSpeakerAvatar: { width: 44, height: 44, borderRadius: 22, marginRight: 14 },
+    detailSpeakerName: { fontSize: 17, fontWeight: '600', color: colors.detailText },
+    detailSpeakerRole: { fontSize: 14, color: colors.detailMuted, marginTop: 22.2 },
+    detailGoingRow: { marginTop: 14 },
+    detailGoingNames: { fontSize: 15, color: colors.detailMuted, marginTop: 7.7, lineHeight: 20 },
+    detailAboutMedia: { marginHorizontal: -16, marginTop: 6.8, height: 75.3, backgroundColor: '#0B1220' },
+    detailAboutImage: { marginLeft: 16, marginTop: 17.1, width: 361.3, height: 58.2, backgroundColor: '#131C2E', borderRadius: 12 },
+    detailAbout: { fontSize: 15, color: colors.detailText, marginTop: 12, lineHeight: 21 },
+    galleryRoot: { flex: 1, height: '100%', backgroundColor: colors.white },
+    gallerySearchRow: { flexDirection: 'row', alignItems: 'center', paddingLeft: 8, paddingRight: 16, height: 56, gap: 8 },
+    galleryBack: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+    gallerySearchBox: { flex: 1, height: 56, justifyContent: 'center' },
+    gallerySearchPlaceholder: { fontSize: 19, fontWeight: '500', color: '#C4C4C5' },
+    galleryCats: { flexDirection: 'row', paddingLeft: 4, borderBottomWidth: 1, borderBottomColor: '#ECECEF' },
+    galleryCat: { alignItems: 'center', paddingHorizontal: 12, paddingBottom: 10 },
+    galleryCatLabel: { fontSize: 14, color: '#C4C4C5', marginTop: 21.2, fontWeight: '500' },
+    galleryCatActive: { color: colors.ink, fontWeight: '600' },
+    galleryCatUnderline: { position: 'absolute' as const, bottom: -1, left: 12, right: 12, height: 2.5, backgroundColor: colors.ink },
+    galleryScrollbar: { position: 'absolute' as const, right: 0, top: 56, width: 2.2, height: 67.3, backgroundColor: '#FFFFFF' },
+    galleryScroll: { flex: 1, marginBottom: 77 },
+    galleryHero: { marginTop: 11, height: 204.5, borderRadius: 20, backgroundColor: '#FF9500', overflow: 'hidden' as const },
+    galleryHeroTitle: { position: 'absolute' as const, left: 16, top: 16, fontSize: 16, fontWeight: '600', color: '#FFFFFF' },
+    galleryHeroCount: { position: 'absolute' as const, left: 16, top: 41, fontSize: 12.2, color: 'rgba(255,255,255,0.92)' },
+    galleryHeroCardA: { position: 'absolute' as const, right: 78, top: 42, width: 140, height: 162, borderRadius: 12, transform: [{ rotate: '-8deg' }] },
+    galleryHeroCardB: { position: 'absolute' as const, right: 10, top: 30, width: 124, height: 140, borderRadius: 12, transform: [{ rotate: '6deg' }] },
+    galleryGrid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 16, columnGap: 16, rowGap: 26.2 },
+    galleryTile: { width: 172.5, height: 145.2, borderRadius: 12, overflow: 'hidden' as const, backgroundColor: '#F4F4F6' },
+    galleryTileImg: { width: '100%', height: 97.7 },
+    galleryTileLabelWrap: { backgroundColor: '#FFFFFF', height: 47.5, alignItems: 'center', justifyContent: 'center' },
+    galleryTileLabel: { fontSize: 15, color: colors.ink },
+    galleryFooter: { position: 'absolute' as const, left: 16, right: 16, bottom: 15, height: 50.2, justifyContent: 'center' },
+    galleryChooseBtn: { flex: 1, paddingHorizontal: 12, backgroundColor: '#2E2E30', borderRadius: 25, alignItems: 'center', justifyContent: 'center' },
+    galleryChooseText: { width: '100%', textAlign: 'center', color: '#FFFFFF', fontSize: 16, fontWeight: '500' },
+    coverChangeText: { fontSize: 13, color: colors.inkMuted, marginTop: 6, alignSelf: 'center' },
+    createRoot: { flex: 1, height: '100%', backgroundColor: '#F6F7F8' },
+    iconBtn48: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+    createHeader: { flexDirection: 'row', alignItems: 'center', paddingLeft: 8, paddingRight: 16, paddingTop: 4, paddingBottom: 4, height: 56, gap: 8 },
+    createTitle: { fontSize: 19, fontWeight: '500', color: colors.ink, width: 116.1 },
+    createAvatarGroup: { width: 54.2, height: 48, flexDirection: 'row', alignItems: 'center' },
+    createAvatarImg: { width: 28, height: 28, borderRadius: 14 },
+    createAvatarTarget: { position: 'absolute' as const, left: 0, top: 10, width: 28, height: 28 },
+    restorePill: { alignSelf: 'center', flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#EDEEEF', borderRadius: 20.75, width: 168.8, height: 41.5, paddingLeft: 12 },
+    restoreClock: { marginTop: 11.75 },
+    restoreText: { fontSize: 14, color: '#969798', width: 92.4, marginLeft: 4, marginTop: 8, lineHeight: 18.9, flexShrink: 0 },
+    restoreClose: { width: 48, height: 41.5, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+    coverUpload: { width: 240.5, height: 240.5, alignSelf: 'center', backgroundColor: '#EDEEEF', borderRadius: 20, marginTop: 5.5 },
+    coverUploadBtn: {
+        position: 'absolute', right: 4, bottom: 4, width: 48, height: 48, borderRadius: 24,
+        backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center',
+    },
+    inputField: { width: 361, height: 58.6, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, justifyContent: 'center', paddingLeft: 16, marginTop: 30.2 },
+    eventNameHint: { fontSize: 21, fontWeight: '500', color: '#C4C4C5', width: 119.7 },
+    timeCard: { width: 361, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 24, marginTop: 12.7, height: 105.6, justifyContent: 'center' },
+    timeLineRow: { flexDirection: 'row', alignItems: 'center', height: 52.8, paddingLeft: 16, paddingRight: 16 },
+    timelineCol: { width: 28, alignItems: 'center', justifyContent: 'center' },
+    timeDotFilled: { width: 11, height: 11, borderRadius: 5.5, backgroundColor: '#A1A1A2' },
+    timeDotHollow: { width: 11, height: 11, borderRadius: 5.5, borderWidth: 2, borderColor: '#C4C4C9', backgroundColor: 'transparent' },
+    timelineDashed: { width: 0, height: 22, borderLeftWidth: 2, borderLeftColor: '#C4C4C9', borderStyle: 'dashed' },
+    timeLabelStart: { fontSize: 15.5, color: '#A1A1A2', width: 71.3, fontWeight: '500' },
+    timeLabelEnd: { fontSize: 15.5, color: '#A1A1A2', width: 80.4, fontWeight: '500' },
+    datePill: { width: 116.1, height: 48, alignItems: 'center', justifyContent: 'center' },
+    datePillEnd: { width: 116.1, height: 48, alignItems: 'center', justifyContent: 'center', marginLeft: 6.1 },
+    timePillA: { width: 95.3, height: 48, alignItems: 'center', justifyContent: 'center', marginLeft: 6.1 },
+    timePillB: { width: 86.2, height: 48, alignItems: 'center', justifyContent: 'center', marginLeft: 6.1 },
+    pillBox: { width: '100%', height: 36, borderRadius: 10, backgroundColor: '#F4F4F6', alignItems: 'center', justifyContent: 'center' },
+    pillText: { fontSize: 16, fontWeight: '500', color: '#151516', width: '100%', textAlign: 'center' },
+    rowCard: { width: 361, height: 48, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, marginTop: 9.1 },
+    rowCardTall: { width: 361, height: 52, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, marginTop: 10.5 },
+    rowLabelLocation: { fontSize: 15.5, color: '#A1A1A2', width: 128.8, marginLeft: 6, fontWeight: '500' },
+    rowLabelDesc: { fontSize: 15.5, color: '#A1A1A2', width: 122.3, marginLeft: 6, fontWeight: '500' },
+    rowLabelApproval: { fontSize: 15.5, color: '#A1A1A2', width: 130.3, marginLeft: 8, fontWeight: '500' },
+    ticketingDivider: { height: 1, backgroundColor: '#E5E6E7', marginTop: 24.8, marginHorizontal: 16 },
+    ticketingTitle: { fontSize: 13, color: '#9C9C9E', width: 64.4, marginTop: 19, marginLeft: 16 },
+    approvalRow: { width: 361, height: 52, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, paddingRight: 16, marginTop: 12.1 },
+    toggle: { width: 54, height: 32, borderRadius: 16, backgroundColor: '#D6D6DB', justifyContent: 'center', paddingHorizontal: 3 },
     toggleOn: { backgroundColor: '#1A1A1A' },
-    toggleThumb: { width: 30, height: 30, borderRadius: 15, backgroundColor: '#fff' },
+    toggleThumb: { width: 26, height: 26, borderRadius: 13, backgroundColor: '#fff' },
     toggleThumbOn: { alignSelf: 'flex-end' },
-    emptyStateWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
-    notifIllustration: { width: 280, height: 220 },
-    chatPlaceholder: { marginBottom: 20 },
-    bigEmptyTitle: { fontSize: 28, fontWeight: '600', color: colors.inkSecondary, marginTop: 20 },
-    bigEmptyDesc: { fontSize: 19, color: colors.inkLight, textAlign: 'center', marginTop: 12, lineHeight: 28 },
+    emptyStateWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, paddingBottom: 34 },
+    notifIllustration: { width: 250, height: 196 },
+    chatPlaceholder: { marginBottom: 18 },
+    bigEmptyTitle: { fontSize: 19.3, fontWeight: '600', color: '#737373', lineHeight: 25.1, marginTop: 18 },
+    bigEmptyDesc: { fontSize: 15, color: '#737373', textAlign: 'center', marginTop: 6.9, lineHeight: 19.5 },
     tabBar: {
         position: 'absolute', bottom: 0, left: 0, right: 0,
-        flexDirection: 'row', backgroundColor: colors.tabBar,
-        paddingTop: 10, paddingBottom: 22,
+        flexDirection: 'row', backgroundColor: colors.tabBar, gap: 8,
+        paddingTop: 0, paddingBottom: 0, height: 88, justifyContent: 'flex-start',
     },
-    tabItem: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: 8 },
-    tabIconWrap: { width: 64, height: 40, alignItems: 'center', justifyContent: 'center', borderRadius: 20 },
-    tabPillActive: { backgroundColor: '#E3E4E6' },
-    tabLabel: { fontSize: 14, marginTop: 1 },
+    tabItem: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0 },
+    tabIconWrap: { width: 56, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: 16, marginTop: 20 },
+    tabPillActive: { backgroundColor: colors.tabPill },
+    tabLabel: { fontSize: 12, marginTop: 13.7, letterSpacing: -0.19 },
     createFab: {
-        position: 'absolute', right: 18, bottom: 104, flexDirection: 'row', alignItems: 'center',
-        backgroundColor: '#EFEFF1', borderRadius: 26, paddingHorizontal: 22, paddingVertical: 13,
-        shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
+        position: 'absolute', right: 16, bottom: 79, flexDirection: 'row', alignItems: 'center',
+        backgroundColor: colors.fab, borderRadius: 28, paddingHorizontal: 16, paddingVertical: 16,
+        shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 16, shadowOffset: { width: 0, height: 5 },
         elevation: 5, zIndex: 30,
     },
-    createFabText: { fontSize: 19, fontWeight: '500', color: colors.inkSecondary, marginLeft: 9 },
+    createFabText: { fontSize: 16, fontWeight: '500', color: '#6B6B6C', marginLeft: 8 },
     createFabSmall: {
-        position: 'absolute', right: 18, bottom: 104, width: 56, height: 56, borderRadius: 20,
-        alignItems: 'center', justifyContent: 'center', backgroundColor: '#EFEFF1',
+        position: 'absolute', right: 16, bottom: 79, width: 56, height: 56, borderRadius: 20,
+        alignItems: 'center', justifyContent: 'center', backgroundColor: colors.fab,
         shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
         elevation: 5, zIndex: 30,
     },
