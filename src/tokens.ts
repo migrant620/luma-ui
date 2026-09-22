@@ -76,3 +76,14 @@ export const typeScale = {
     tab: 12,
     small: 11,
 } as const;
+export const themes = {
+    light: colors,
+    dark: {
+        ...colors,
+        surface: '#141414',
+        card: '#1E1E1E',
+        ink: '#F2F2F2',
+        muted: '#9A9A9A',
+        hairline: '#2C2C2C',
+    },
+} as const;
