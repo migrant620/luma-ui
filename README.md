@@ -82,6 +82,10 @@ npm run build:web
 
 The static output is written to `dist/`. Serve that directory over HTTP or HTTPS; opening `index.html` directly as a local file is not supported.
 
+## Demo build
+
+The published demo at <https://luma-ui.edgeone.cool> is built from this repository. It was last rebuilt and redeployed on 2026-09-25 (EdgeOne deployment `dp1nju3rwgtg`, source revision `fde0766b`).
+
 ## Scope and limitations
 
 - **First batch of screens.** This edition covers the welcome wall, the sign-in sheet, the home feed, Discover, the dark event detail and the create-event form. Notifications and Chat are empty states. Ticketing, guests, calendar and profile flows are not built.
