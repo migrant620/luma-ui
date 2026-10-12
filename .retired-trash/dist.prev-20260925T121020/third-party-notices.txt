@@ -1,0 +1,64 @@
+Third-party notices for Airbnb UI Prototype
+
+This file covers the fonts and images bundled with the build, plus the
+JavaScript dependencies. Notices for the JavaScript dependencies are
+enumerated below and expanded in the publication step.
+
+------------------------------------------------------------
+FONTS
+------------------------------------------------------------
+
+- Roboto (Regular 400, Medium 500, Bold 700)
+  Source: mirrored from apps/tiimo/project/assets/fonts, which carries the
+  upstream licence.
+  Licence: Apache License 2.0 (Google Roboto Project).
+  Use: numeric strings (prices, ratings, dates, counts), per the design brief.
+  Full text: assets/fonts/Roboto-OFL.txt
+
+- Plus Jakarta Sans (variable, weights 400/700)
+  Source: Google Fonts (ofl/plusjakartasans), downloaded for this project.
+  Licence: SIL Open Font License 1.1.
+  Use: body text and headings. Replaces the proprietary Airbnb Cereal.
+  Full text: assets/fonts/PlusJakartaSans-OFL.txt
+
+------------------------------------------------------------
+IMAGES
+------------------------------------------------------------
+
+All listing photographs, host/room imagery and the map illustration are
+original works produced for this prototype:
+
+- Listing photos (h01..h06.webp) and photo-tour images (t01..t06.webp):
+  generated with an image-generation model (ImageGen) from original text
+  prompts. They are NOT screenshots, recolourings or derivatives of any
+  Airbnb, host or third-party photograph, and carry no third-party
+  copyright. They are distributed under the prototype's noncommercial
+  study licence. See apps/airbnb/spec/content-manifest.json for the
+  per-image record.
+
+- Map background (Results screen): drawn from primitives (roads, a water
+  body, blocks) in react-native-svg. It is a stylised illustration, not a
+  real geographic map tile, so no map-tile copyright applies.
+
+No Airbnb brand graphics, logos, icons or avatar illustrations are used.
+
+------------------------------------------------------------
+JAVASCRIPT DEPENDENCIES (summary)
+------------------------------------------------------------
+
+- expo 57.0.21, expo-font 57.0.3, expo-status-bar 57.0.1, expo-system-ui 57.0.3
+  Licence: MIT (Expo / 650 Industries).
+- react 19.2.3, react-dom 19.2.3
+  Licence: MIT (Meta Platforms).
+- react-native 0.86.3
+  Licence: MIT (Meta Platforms).
+- react-native-web 0.21.2
+  Licence: MIT (Nicolas Gallagher).
+- react-native-safe-area-context 5.7.0
+  Licence: MIT.
+- react-native-svg 15.15.4
+  Licence: MIT.
+
+The complete and authoritative dependency licence texts are resolved from
+each package's own licence file in node_modules and appended during the
+publication step.
