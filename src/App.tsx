@@ -1219,7 +1219,7 @@ const styles = StyleSheet.create({
   popularTitle: { fontSize: 19, fontWeight: '600', color: colors.inkMuted, paddingHorizontal: 16, marginTop: 2 },
 
   // Empty state
-  emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 17.9, gap: 16 },
+  emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 42, gap: 16 },
   emptyIcon: { width: 64, height: 64, borderRadius: 15, backgroundColor: colors.emptyTile, alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '500', color: colors.inkMuted },
   emptyDesc: { fontSize: 14, color: colors.inkMuted, marginTop: 6.2, lineHeight: 18 },
@@ -1305,7 +1305,7 @@ const styles = StyleSheet.create({
   // icon box, then 13.1 dp of right padding), so the 12/8/22/13.5 here is 0.5 dp over it: four chips
   // a row means the row's end (and so the clipped chip the reference reports at x = 375.9) drifts by
   // that reserve plus the label's own measure error, three times over.
-  catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 13.5, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
+  catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 9, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
   catLabel: { fontSize: 16, fontWeight: '500', color: colors.ink },
   // The "Cities" band under the chip rows: a 53.1 dp run at x = 16 and a 79 x 13.5 dp control whose
   // right edge is the frame's own 377 dp content edge.
@@ -1455,7 +1455,7 @@ const styles = StyleSheet.create({
   restoreClock: { marginTop: 11.75 },
   // `flexShrink: 0` keeps the run on one line: at 14 px the phrase is 88 px and the pill leaves 104.8,
   // so any shrink wraps it and the reference's single 92.4 x 18.9 dp run becomes two 36 dp lines.
-  restoreText: { fontSize: 14, color: '#969798', width: 92.4, marginLeft: 4, marginTop: 8, lineHeight: 18.9, flexShrink: 0 },
+  restoreText: { fontSize: 14, color: '#969798', marginLeft: 4, marginTop: 8, lineHeight: 18.9, flexShrink: 0 },
   restoreClose: { width: 48, height: 41.5, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   coverUpload: { width: 240.5, height: 240.5, alignSelf: 'center', backgroundColor: '#EDEEEF', borderRadius: 20, marginTop: 5.5 },
   // l9_create's raster puts the light card (237,238,239) across this whole 48 dp box with the glyph
