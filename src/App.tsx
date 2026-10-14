@@ -1219,7 +1219,10 @@ const styles = StyleSheet.create({
   popularTitle: { fontSize: 19, fontWeight: '600', color: colors.inkMuted, paddingHorizontal: 16, marginTop: 2 },
 
   // Empty state
-  emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 42, gap: 16 },
+  // R24: the reference's empty-events card sits ~24 dp higher than the 42 dp top
+  // margin we had; the whole block below ("Picked for You", date dividers) was
+  // therefore shifted +24 dp. Drop the margin to 18 to re-seat it.
+  emptyCard: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, marginTop: 18, gap: 16 },
   emptyIcon: { width: 64, height: 64, borderRadius: 15, backgroundColor: colors.emptyTile, alignItems: 'center', justifyContent: 'center' },
   emptyTitle: { fontSize: 16, fontWeight: '500', color: colors.inkMuted },
   emptyDesc: { fontSize: 14, color: colors.inkMuted, marginTop: 6.2, lineHeight: 18 },
