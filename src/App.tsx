@@ -1058,6 +1058,12 @@ function TabBar({ active, onChange }: { active: string; onChange: (t: string) =>
   ];
   return (
     <View style={styles.tabBar}>
+      {/* The bar's own fill starts 25 dp below the top of its 88 dp layout box. The reference's tab
+          bar background measures from y=713.9 to the frame bottom (a 63 dp bar); the prototype was
+          painting 88 dp of #F4F5F6 up to y=689, so 25 dp of grey sat where the reference shows the
+          page. The labels and pills keep their measured offsets, which is why the fill is a layer
+          inside the box rather than a shortened box. */}
+      <View style={styles.tabBarFill} pointerEvents="none" />
       {tabs.map((t) => {
         const I = t.icon;
         const isActive = active === t.id;
@@ -1521,8 +1527,14 @@ const styles = StyleSheet.create({
   // the reference, whose tab labels sit at y = 754.7 (bar top is 689 for an 88 dp bar).
   tabBar: {
     position: 'absolute', bottom: 0, left: 0, right: 0,
-    flexDirection: 'row', backgroundColor: colors.tabBar, gap: 8,
+    flexDirection: 'row', backgroundColor: 'transparent', gap: 8,
     paddingTop: 0, paddingBottom: 0, height: 88, justifyContent: 'flex-start',
+  },
+  /* The reference's own bar top: 713.9 dp on a frame that is 777 dp tall, i.e. 25 dp below this
+   * layout box's top edge. Sampled across L4/L5/L11 at x=6 dp and x=196 dp - all three read white
+   * above 714 and #F4F5F6 from 714 down. */
+  tabBarFill: {
+    position: 'absolute', top: 25, left: 0, right: 0, bottom: 0, backgroundColor: colors.tabBar,
   },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0 },
   tabIconWrap: { width: 56, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: 16, marginTop: 20 },
