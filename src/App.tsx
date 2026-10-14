@@ -1298,15 +1298,20 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 11, fontWeight: '600', lineHeight: 12.5, marginTop: 0 },
 
   // Browse by Category
-  browseTitle: { fontSize: 19, fontWeight: '700', color: colors.ink, paddingHorizontal: 16, marginTop: 22 },
+  // R23: substitute font (Plus Jakarta Sans) runs ~4 dp wider than the original on this
+  // 184.9 dp title; a small negative track brings the measured width back inside tolerance.
+  browseTitle: { fontSize: 19, fontWeight: '700', color: colors.ink, paddingHorizontal: 16, marginTop: 22, letterSpacing: -0.4 },
   catRow: { marginTop: 13 },
   catRow2: { marginTop: 0 },
   // The chip's reserve around its label is 55.3 dp on the device (a 42.2 dp glyph inside the 48 dp
   // icon box, then 13.1 dp of right padding), so the 12/8/22/13.5 here is 0.5 dp over it: four chips
   // a row means the row's end (and so the clipped chip the reference reports at x = 375.9) drifts by
   // that reserve plus the label's own measure error, three times over.
-  catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 9, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
-  catLabel: { fontSize: 16, fontWeight: '500', color: colors.ink },
+  // R23: chips measured ~1.5 dp wider than the reference each, so the 4-per-row
+  // band overflows and the last chip ("Running") drifts ~6.7 dp left. Trim the
+  // horizontal reserve and add a hair of negative tracking to pull the row back.
+  catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 11, paddingRight: 8, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
+  catLabel: { fontSize: 16, fontWeight: '500', color: colors.ink, letterSpacing: -0.15 },
   // The "Cities" band under the chip rows: a 53.1 dp run at x = 16 and a 79 x 13.5 dp control whose
   // right edge is the frame's own 377 dp content edge.
   citiesRow: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16, marginTop: 17.65 },
