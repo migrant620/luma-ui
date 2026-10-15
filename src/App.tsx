@@ -585,6 +585,9 @@ function PopularCard({ ev, cover, preview, onPress, isLast, isFirst }: { ev?: an
   );
 }
 
+/** The discover list's four rules, at the y the L5 capture puts them. */
+const DISCOVER_RULES = [590.6, 629.9, 639.0, 678.3];
+
 function DiscoverScreen({ onOpenDetail, onScroll }: { onOpenDetail: (id: string) => void; onScroll?: (y: number) => void }) {
   const catIcons: Record<string, any> = {
     family: <CatFamily />, tech: <CatTech />, food: <CatFood />,
@@ -669,6 +672,11 @@ function DiscoverScreen({ onOpenDetail, onScroll }: { onOpenDetail: (id: string)
           </View>
         </View>
       </ScrollView>
+      {/* The four rules the discover list carries: (240,240,241) at y 590.6 / 629.9 / 639.0 / 678.3,
+          each running from x 23.7 to the right edge. The prototype drew none of them. */}
+      {DISCOVER_RULES.map((top) => (
+        <View key={top} style={[styles.hairline, { top, left: 23.7 }]} pointerEvents="none" />
+      ))}
     </View>
   );
 }
@@ -896,6 +904,8 @@ function CoverGallery({ onBack }: { onBack: () => void }) {
           ))}
         </View>
       </ScrollView>
+      {/* The rule above the gallery footer: full width at y 698.7, (240,240,241) on L10. */}
+      <View style={[styles.hairline, { top: 698.7 }]} pointerEvents="none" />
       <View style={styles.galleryFooter}>
         <TouchableOpacity style={styles.galleryChooseBtn} accessibilityLabel="Choose From Library">
           <Text style={styles.galleryChooseText}>Choose From Library</Text>
@@ -1004,6 +1014,8 @@ function CreateScreen({ onBack }: { onBack: () => void }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      {/* The rule under the description card: full width at y 496.3, (240,240,241) on L9. */}
+      <View style={[styles.hairline, { top: 496.3 }]} pointerEvents="none" />
       <HomeIndicator />
     </View>
   );
@@ -1129,6 +1141,9 @@ export default function App() {
 /* ---------- Styles ---------- */
 const styles = StyleSheet.create({
   appRoot: { flex: 1, backgroundColor: colors.white, maxWidth: 480, alignSelf: 'center', width: '100%', height: '100%', overflow: 'hidden' },
+  /* A 1 dp rule at the y a capture reports it. Placed on the screen's own root, so it sits at that
+     viewport y rather than scrolling with the list behind it. */
+  hairline: { position: 'absolute', left: 0, right: 0, height: 1, backgroundColor: colors.divider },
   screenRoot: { flex: 1, height: '100%', backgroundColor: colors.white },
   scroll: { flex: 1 },
 

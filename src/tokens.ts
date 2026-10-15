@@ -40,7 +40,10 @@ export const colors = {
   btnGray: '#F0F0F2',
   btnGrayText: '#1A1A1A',
 
-  divider: '#ECECEE',
+  /* The rules between rows. Measured 2026-10-15 they read (240,240,241) on the captures - L3 at
+     y 594.6, L5 at 590.6 / 629.9 / 639.0 / 678.3, L9 at 496.3, L10 at 698.7 - and the prototype
+     was drawing none of them at all. */
+  divider: '#F0F0F1',
   border: '#E5E5E8',
 
   // UI surfaces (sampled)
