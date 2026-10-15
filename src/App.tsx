@@ -1266,7 +1266,7 @@ const styles = StyleSheet.create({
   // other side of the separator has no such bias, so the correction belongs on the date alone.
   dateBold: { fontSize: 16, fontWeight: '600', color: colors.ink, letterSpacing: -0.16 },
   dateSlash: { fontSize: 16, color: colors.inkMuted, marginRight: 6 },
-  dateDay: { fontSize: 16, color: colors.inkMuted },
+  dateDay: { fontSize: 16, color: colors.inkMuted, letterSpacing: -0.68 },
 
   // Feed rows
   // Feed rows. The reference s band scan gives the card's own row pitch: a 21.9 dp host block, a
