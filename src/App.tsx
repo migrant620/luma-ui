@@ -1481,7 +1481,9 @@ const styles = StyleSheet.create({
   // so any shrink wraps it and the reference's single 92.4 x 18.9 dp run becomes two 36 dp lines.
   restoreText: { fontSize: 14, color: '#969798', marginLeft: 4, marginTop: 8, lineHeight: 18.9, flexShrink: 0 },
   restoreClose: { width: 48, height: 41.5, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  coverUpload: { width: 240.5, height: 240.5, alignSelf: 'center', backgroundColor: '#EDEEEF', borderRadius: 20, marginTop: 5.5 },
+  // R29 measured the corner by walking in along the diagonal: the reference paints at 12.3 dp
+  // (t*(sqrt2-1) -> 12.3 on every corner), not the 20 this card had.
+  coverUpload: { width: 240.5, height: 240.5, alignSelf: 'center', backgroundColor: '#EDEEEF', borderRadius: 12, marginTop: 5.5 },
   // l9_create's raster puts the light card (237,238,239) across this whole 48 dp box with the glyph
   // (34,35,36) as its extreme: the reference's affordance is a bare dark glyph on the card, not a
   // filled dark circle with a light one.
@@ -1489,7 +1491,9 @@ const styles = StyleSheet.create({
     position: 'absolute', right: 4, bottom: 4, width: 48, height: 48, borderRadius: 24,
     backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center',
   },
-  inputField: { width: 361, height: 58.6, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, justifyContent: 'center', paddingLeft: 16, marginTop: 30.2 },
+  // R29 corner measurement: the reference reads 26.1 dp on the 58.6 dp card and 26.2 dp on the
+  // 52 dp one - two heights, one radius, so these cards carry a 26 dp corner.
+  inputField: { width: 361, height: 58.6, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 26, justifyContent: 'center', paddingLeft: 16, marginTop: 30.2 },
   eventNameHint: { fontSize: 21, fontWeight: '500', color: '#C4C4C5', width: 119.7 },
   // The card is exactly two 52.8 dp rows: the reference raster shows it spanning 445 -> 550.6 dp with no
   // vertical padding at all.
@@ -1513,7 +1517,7 @@ const styles = StyleSheet.create({
   pillBox: { width: '100%', height: 36, borderRadius: 10, backgroundColor: '#F4F4F6', alignItems: 'center', justifyContent: 'center' },
   pillText: { fontSize: 16, fontWeight: '500', color: '#151516', width: '100%', textAlign: 'center' },
   rowCard: { width: 361, height: 48, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, marginTop: 9.1 },
-  rowCardTall: { width: 361, height: 52, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 20, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, marginTop: 10.5 },
+  rowCardTall: { width: 361, height: 52, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 26, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, marginTop: 10.5 },
   rowLabelLocation: { fontSize: 15.5, color: '#A1A1A2', width: 128.8, marginLeft: 6, fontWeight: '500' },
   rowLabelDesc: { fontSize: 15.5, color: '#A1A1A2', width: 122.3, marginLeft: 6, fontWeight: '500' },
   rowLabelApproval: { fontSize: 15.5, color: '#A1A1A2', width: 130.3, marginLeft: 8, fontWeight: '500' },
@@ -1564,10 +1568,14 @@ const styles = StyleSheet.create({
     elevation: 5, zIndex: 30,
   },
   createFabText: { fontSize: 16, fontWeight: '500', color: '#6B6B6C', marginLeft: 8 },
+  /* R29 measured the reference's cast halo at mid-height beside this button: 225 / 231 / 235 /
+     238 / 244 / 249 at 0 / 1 / 2 / 3 / 5 / 8 dp out against a 253 page, i.e. a Gaussian whose full
+     coverage darkens 56 levels with sigma 5 dp - roughly twice the strength carried here before,
+     over a tighter falloff. */
   createFabSmall: {
     position: 'absolute', right: 16, bottom: 79, width: 56, height: 56, borderRadius: 20,
     alignItems: 'center', justifyContent: 'center', backgroundColor: colors.fab,
-    shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 14, shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#000', shadowOpacity: 0.22, shadowRadius: 10, shadowOffset: { width: 0, height: 4 },
     elevation: 5, zIndex: 30,
   },
 });
