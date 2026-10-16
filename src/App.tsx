@@ -1181,11 +1181,11 @@ const styles = StyleSheet.create({
   },
   // zIndex lifts the hint above promoContent (which itself sits at 2): the poster text would
   // otherwise be hit-tested on top of it and the reference's own live node would go unreported.
-  promoHint: { position: 'absolute', left: 0, right: 0, bottom: 96, zIndex: 3, textAlign: 'center', fontSize: 13.2, lineHeight: 16.4, color: '#FFFFFF' },
+  promoHint: { position: 'absolute', left: 0, right: 0, bottom: 96, zIndex: 3, textAlign: 'center', fontSize: 13.2, lineHeight: 16.4, color: '#F7F7F7' },
   // The reference reports the same marketing line on the login sheet, page-white at dp 200.9 (the
   // capture's own raster drops it, i.e. it is white on white). Reproduced at the reference's own box
   // so the accessibility tree carries the node the device does.
-  loginHint: { position: 'absolute', left: 0, right: 0, top: 200.9, zIndex: 3, textAlign: 'center', fontSize: 13.2, lineHeight: 16.4, color: '#FFFFFF' },
+  loginHint: { position: 'absolute', left: 0, right: 0, top: 200.9, zIndex: 3, textAlign: 'center', fontSize: 13.2, lineHeight: 16.4, color: '#F7F7F7' },
 
   // Login sheet. Top is read off the reference: its drag handle sits at 457 dp from the frame top and
   // the sheet draws that handle 13 dp outside its own edge, so the sheet's own top edge is 470 dp.
