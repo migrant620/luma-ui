@@ -162,7 +162,7 @@ function PromoBackground({ revealed = false }: { revealed?: boolean }) {
           borderRadius: 10,
           borderWidth: 1.6,
           borderColor: 'rgba(255,255,255,1)',
-          backgroundColor: 'rgba(170,170,175,0.05)',
+          backgroundColor: 'rgba(170,170,175,0.03)',
           overflow: 'hidden',
           ...(Platform.OS === 'web' ? {
             backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
@@ -172,7 +172,7 @@ function PromoBackground({ revealed = false }: { revealed?: boolean }) {
             position: 'absolute',
             left: 17, top: 17, right: 17, bottom: 17,
             borderRadius: 6,
-            backgroundColor: 'rgba(160,160,165,0.10)',
+            backgroundColor: 'rgba(160,160,165,0.06)',
             ...(Platform.OS === 'web' ? {
               backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
             } as any : {}),
@@ -1202,7 +1202,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderTopLeftRadius: 28, borderTopRightRadius: 28,
   },
   grabber: { position: 'absolute', top: -13, width: 40, height: 4, backgroundColor: '#DCDCE0', borderRadius: 2, alignSelf: 'center' },
-  loginSub: { position: 'absolute', top: 24, left: 32, right: 32, fontSize: 15, color: '#737373', textAlign: 'center', lineHeight: 20, fontWeight: '400' },
+  loginSub: { position: 'absolute', top: 24, left: 32, right: 32, fontSize: 15, color: '#737373', textAlign: 'center', lineHeight: 20, fontWeight: '400', letterSpacing: -0.18 },
   // The reference reports each button's caption as the TextView's own view bounds: full inner width
   // (361 dp less 12 dp each side) with the glyphs centred inside it. The run is stretched to that box
   // so the left edge the gate compares is the box's, not the glyphs'.
@@ -1330,7 +1330,7 @@ const styles = StyleSheet.create({
   // a row means the row's end (and so the clipped chip the reference reports at x = 375.9) drifts by
   // that reserve plus the label's own measure error, three times over.
   catChip: { flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 9, height: 48, borderWidth: 1, borderColor: '#F0F0F1', borderRadius: 15, gap: 8, backgroundColor: colors.white },
-  catLabel: { fontSize: 16, fontWeight: '500', color: colors.ink },
+  catLabel: { fontSize: 15, fontWeight: '500', color: colors.ink },
   // The "Cities" band under the chip rows: a 53.1 dp run at x = 16 and a 79 x 13.5 dp control whose
   // right edge is the frame's own 377 dp content edge.
   citiesRow: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16, marginTop: 17.65 },
@@ -1522,7 +1522,7 @@ const styles = StyleSheet.create({
   rowLabelDesc: { fontSize: 15.5, color: '#A1A1A2', width: 122.3, marginLeft: 6, fontWeight: '500' },
   rowLabelApproval: { fontSize: 15.5, color: '#A1A1A2', width: 130.3, marginLeft: 8, fontWeight: '500' },
   ticketingDivider: { height: 1, backgroundColor: '#E5E6E7', marginTop: 24.8, marginHorizontal: 16 },
-  ticketingTitle: { fontSize: 13, color: '#9C9C9E', width: 64.4, marginTop: 19, marginLeft: 16 },
+  ticketingTitle: { fontSize: 14, fontWeight: '600', color: '#9C9C9E', width: 64.4, marginTop: 19, marginLeft: 16 },
   approvalRow: { width: 361, height: 52, alignSelf: 'center', backgroundColor: '#fff', borderRadius: 22, flexDirection: 'row', alignItems: 'center', paddingLeft: 16, paddingRight: 16, marginTop: 12.1 },
   toggle: { width: 54, height: 32, borderRadius: 16, backgroundColor: '#D6D6DB', justifyContent: 'center', paddingHorizontal: 3 },
   toggleOn: { backgroundColor: '#1A1A1A' },
